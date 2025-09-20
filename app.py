@@ -673,3 +673,809 @@ elif page == "📖 Learning Modules":
         - Water is the fundamental substance from which all things arise
         - Earthquakes are caused by water movements, not angry gods
         - Natural events can be predicted through observation and reasoning
+        
+        **Historical Significance**: First to seek rational rather than supernatural explanations
+        
+        ## Heraclitus (c. 535-475 BCE)
+        
+        **Central Doctrine**: "Everything flows" - reality is constant change
+        
+        **Famous Sayings:**
+        - "You cannot step into the same river twice"
+        - "The way up and down are one and the same"
+        - "Opposition is necessary for harmony"
+        
+        **Key Insight**: Apparent stability emerges from underlying change and conflict
+        
+        ## Parmenides (c. 515-450 BCE)
+        
+        **Radical Claim**: Change is an illusion - reality is eternal and unchanging
+        
+        **The Way of Truth**:
+        - What exists must be eternal, indivisible, and unchanging
+        - Coming-to-be and passing-away are impossible
+        - Sensory experience deceives us about reality's true nature
+        
+        **Method**: Pure logical reasoning reveals truth about reality
+        
+        ## Zeno of Elea (c. 490-430 BCE)
+        
+        **Purpose**: Defend Parmenides by showing the absurdity of motion and change
+        
+        **Famous Paradoxes:**
+        
+        **Achilles and the Tortoise**: Achilles can never catch a tortoise with a head start because he must always first reach where the tortoise was, by which time it has moved further ahead.
+        
+        **The Arrow**: At any instant, a moving arrow occupies a space equal to itself and is therefore at rest. If it's at rest at every instant, how can it move?
+        
+        **Historical Impact**: These paradoxes forced philosophers to think more carefully about space, time, and infinity.
+        
+        ## The Fundamental Debate
+        
+        **Heraclitus vs. Parmenides** represents a fundamental tension in philosophy:
+        - Should we trust sensory experience (Heraclitus) or pure reason (Parmenides)?
+        - Is reality fundamentally about change or permanence?
+        - How do we reconcile the apparent conflict between experience and logic?
+        
+        This debate continues to influence philosophy, science, and mathematics today.
+        """)
+        
+        with st.expander("💡 Critical Analysis"):
+            st.markdown("""
+            **Consider these questions:**
+            
+            1. **Thales's Method**: Was Thales right to seek natural explanations? What are the advantages and limitations of this approach?
+            
+            2. **Heraclitus vs. Parmenides**: Who do you think was closer to the truth? Can their views be reconciled?
+            
+            3. **Zeno's Paradoxes**: How might we resolve the paradox of Achilles and the tortoise? What does this tell us about the relationship between mathematics and reality?
+            """)
+    
+    elif module == "Module 5: Knowledge vs. Opinion":
+        st.subheader("Distinguishing Knowledge from Opinion")
+        
+        st.markdown("""
+        ## The Fundamental Distinction
+        
+        One of philosophy's most important tasks is distinguishing between what we actually **know** and what we merely **believe** or **think we know**.
+        
+        ## Characteristics of Knowledge
+        
+        **Knowledge requires:**
+        1. **Truth**: The belief must correspond to reality
+        2. **Belief**: You must accept it as true
+        3. **Justification**: You must have good reasons for believing it
+        4. **Reliability**: The method of acquiring it must be dependable
+        
+        ## Characteristics of Opinion
+        
+        **Opinion typically involves:**
+        - Personal preference or judgment
+        - Cultural or social influence
+        - Limited evidence or justification
+        - Subjective rather than objective criteria
+        
+        ## The Spectrum of Certainty
+        
+        **Absolute Certainty**: Mathematical and logical truths (2+2=4)
+        
+        **High Probability**: Well-established scientific facts
+        
+        **Reasonable Belief**: Conclusions based on good evidence
+        
+        **Opinion**: Judgments based on limited information
+        
+        **Speculation**: Guesses with little supporting evidence
+        
+        ## Sources of Error
+        
+        **Why we might mistake opinion for knowledge:**
+        
+        1. **Confirmation Bias**: Seeking information that confirms our existing beliefs
+        2. **Authority Bias**: Accepting claims because of who made them
+        3. **Cultural Assumptions**: Mistaking local customs for universal truths
+        4. **Emotional Attachment**: Wanting something to be true
+        
+        ## Tests for Knowledge Claims
+        
+        **Ask yourself:**
+        - What evidence supports this claim?
+        - Could this be explained differently?
+        - What would count as evidence against it?
+        - Are my sources reliable and unbiased?
+        - Am I being influenced by emotion or desire?
+        
+        ## The Socratic Method
+        
+        **Socrates' approach to testing knowledge:**
+        1. Ask probing questions about basic assumptions
+        2. Reveal contradictions in our beliefs
+        3. Admit ignorance when evidence is insufficient
+        4. Continue searching for better understanding
+        
+        ## Practical Applications
+        
+        **In daily life, distinguish between:**
+        - Facts that can be verified vs. personal preferences
+        - Expert consensus vs. popular opinion  
+        - Evidence-based conclusions vs. wishful thinking
+        - Logical reasoning vs. emotional reactions
+        """)
+        
+        with st.expander("💡 Self-Assessment"):
+            st.markdown("""
+            **Evaluate your own beliefs:**
+            
+            Think of something you're confident you "know." Apply these tests:
+            
+            1. **Evidence Test**: What specific evidence supports this belief?
+            2. **Alternative Test**: What other explanations are possible?
+            3. **Source Test**: Where did this belief come from? Is the source reliable?
+            4. **Bias Test**: Might you want this to be true for personal reasons?
+            
+            This process helps distinguish genuine knowledge from strongly held opinions.
+            """)
+    
+    elif module == "Module 6: Eastern Philosophy - The Upanishads":
+        st.subheader("Eastern Philosophy: The Upanishads")
+        
+        st.markdown("""
+        ## The Upanishads: Ancient Wisdom Literature
+        
+        The **Upanishads** (800-200 BCE) are ancient Indian philosophical texts that explore the nature of ultimate reality and the self. They represent one of humanity's earliest systematic philosophical investigations.
+        
+        ## Core Philosophical Concepts
+        
+        **Brahman**: The ultimate, unchanging reality underlying all existence
+        - Beyond all qualities and descriptions
+        - The source and ground of everything that exists
+        - Not a personal god, but pure being itself
+        
+        **Atman**: The true self or soul within each individual
+        - Not the body, mind, or personality
+        - The eternal, unchanging essence of consciousness
+        - The witness of all experience
+        
+        ## The Central Teaching: "Tat Tvam Asi"
+        
+        **"That Art Thou" (Tat tvam asi)** - The most famous teaching from the Chandogya Upanishad
+        
+        **Meaning**: Your true self (Atman) is identical with ultimate reality (Brahman)
+        
+        **Implication**: The individual soul and universal consciousness are one and the same
+        
+        ## The Teaching Story
+        
+        A father (Uddalaka) instructs his son (Svetaketu):
+        
+        *"Place this salt in water and return to me in the morning. Where is the salt? It has dissolved, but taste the water - everywhere it is salty. So too, dear son, the eternal essence pervades all existence. That reality is the true Self, and That Art Thou, Svetaketu."*
+        
+        ## Philosophical Implications
+        
+        **Metaphysics**: Reality is fundamentally one, not many
+        - Apparent diversity is illusion (Maya)
+        - Underlying unity connects all existence
+        
+        **Epistemology**: True knowledge is self-knowledge
+        - External learning cannot reveal ultimate truth
+        - Direct insight, not reasoning, leads to wisdom
+        
+        **Ethics**: Recognizing unity dissolves ego and selfishness
+        - If all is one, harming others harms oneself
+        - Compassion flows naturally from understanding
+        
+        ## Comparison with Western Philosophy
+        
+        **Similarities to Western thought:**
+        - Parmenides: Reality is One and unchanging
+        - Plato: Appearances vs. deeper reality
+        - Plotinus: The One as source of all being
+        
+        **Differences from Western thought:**
+        - Emphasizes direct experience over logical argument
+        - Focuses on liberation from suffering, not just understanding
+        - Sees rational thinking as ultimately limited
+        
+        ## The Method of Inquiry
+        
+        **"Neti, neti"** ("Not this, not this")
+        - Systematic negation of everything that is not the Self
+        - By eliminating what you are not, discover what you are
+        - Similar to Socratic method of questioning assumptions
+        
+        ## Contemporary Relevance
+        
+        Modern physicists and philosophers have noted parallels between Upanishadic thought and:
+        - Quantum mechanics (the observer-observed relationship)
+        - Systems theory (interconnectedness of all phenomena)
+        - Consciousness studies (the nature of subjective experience)
+        """)
+        
+        with st.expander("💡 Philosophical Reflection"):
+            st.markdown("""
+            **Consider these questions:**
+            
+            1. **Identity**: What do you consider your "true self"? Is it your body, mind, memories, or something else?
+            
+            2. **Unity vs. Multiplicity**: Do you see reality as fundamentally one or many? What evidence supports each view?
+            
+            3. **Knowledge**: Can some truths only be known through direct experience rather than reasoning? What might be examples?
+            
+            4. **East meets West**: How might we combine the Upanishadic emphasis on unity with the Western emphasis on analysis and argument?
+            """)
+
+elif page == "🎯 Interactive Quiz":
+    st.header("🎯 Test Your Understanding")
+    
+    show_score()
+    
+    if st.session_state.current < len(st.session_state.questions):
+        show_question()
+    else:
+        st.balloons()
+        st.success(f"🎉 **Quiz Complete!** Final Score: {st.session_state.score} XP")
+        
+        # Performance analysis
+        total_possible = len(st.session_state.questions) * 10
+        percentage = (st.session_state.score / total_possible) * 100
+        
+        if percentage >= 90:
+            st.success("🏆 **Philosophy Master!** You've mastered the fundamentals of philosophical thinking.")
+        elif percentage >= 80:
+            st.info("🎓 **Advanced Understanding** - You have a solid grasp of core concepts!")
+        elif percentage >= 70:
+            st.warning("📚 **Good Progress** - Review the learning modules for deeper understanding.")
+        else:
+            st.error("🔄 **Keep Learning** - Spend more time with the learning modules before retaking.")
+        
+        restart_quiz()
+
+elif page == "📊 Visualizations":
+    create_visualizations()
+
+elif page == "📚 Reference Guide":
+    st.header("📚 Quick Reference Guide")
+    
+    tab1, tab2, tab3, tab4 = st.tabs(["Key Terms", "Philosophers", "Arguments", "Study Tips"])
+    
+    with tab1:
+        st.subheader("Essential Philosophical Terms")
+        
+        terms = {
+            "Philosophy": "The systematic examination of fundamental questions about reality, knowledge, values, and existence",
+            "Epistemology": "The branch of philosophy that studies the nature, sources, and limits of knowledge",
+            "Metaphysics": "The branch of philosophy that examines the nature of reality and existence",
+            "Logic": "The study of valid reasoning and argument structure",
+            "Claim": "A statement that can be either true or false",
+            "Argument": "A set of premises offered in support of a conclusion",
+            "Premise": "A statement that provides evidence or support for a conclusion",
+            "Conclusion": "The statement that premises are meant to support",
+            "Valid": "An argument where the conclusion follows logically from the premises",
+            "Sound": "A valid argument with true premises",
+            "Vague": "Using words that are not precise or whose boundaries are unclear",
+            "Ambiguous": "Using words that can have several possible meanings",
+            "A Priori": "Knowledge that can be known independently of experience",
+            "A Posteriori": "Knowledge that requires experience to be known",
+            "Rationalism": "The view that reason is the primary source of knowledge",
+            "Empiricism": "The view that sensory experience is the primary source of knowledge",
+            "Skepticism": "The view that questions whether certain or any knowledge is possible",
+            "Brahman": "In the Upanishads, the ultimate reality underlying all existence",
+            "Atman": "In the Upanishads, the true self or soul within each individual"
+        }
+        
+        for term, definition in terms.items():
+            with st.expander(f"**{term}**"):
+                st.write(definition)
+    
+    with tab2:
+        st.subheader("Key Philosophers")
+        
+        philosophers = {
+            "Thales (c. 624-546 BCE)": {
+                "Key Idea": "Water is the fundamental substance; natural phenomena have natural explanations",
+                "Significance": "First Western philosopher to seek rational rather than mythological explanations",
+                "Quote": "'All things are full of gods' (meaning natural forces, not supernatural beings)"
+            },
+            "Heraclitus (c. 535-475 BCE)": {
+                "Key Idea": "Everything flows - reality is constant change and flux",
+                "Significance": "Emphasized the role of change and opposition in understanding reality",
+                "Quote": "You cannot step into the same river twice"
+            },
+            "Parmenides (c. 515-450 BCE)": {
+                "Key Idea": "Change is illusion - reality is eternal, unchanging Being",
+                "Significance": "Used pure reason to argue against the evidence of the senses",
+                "Quote": "What is, is; what is not, is not"
+            },
+            "Zeno of Elea (c. 490-430 BCE)": {
+                "Key Idea": "Motion and change lead to logical contradictions",
+                "Significance": "Created paradoxes that challenged assumptions about space and time",
+                "Quote": "The moving arrow is at rest"
+            },
+            "Socrates (470-399 BCE)": {
+                "Key Idea": "The unexamined life is not worth living; true knowledge begins with admitting ignorance",
+                "Significance": "Developed the method of systematic questioning to test beliefs",
+                "Quote": "I know that I know nothing"
+            }
+        }
+        
+        for name, info in philosophers.items():
+            with st.expander(f"**{name}**"):
+                st.write(f"**Key Idea**: {info['Key Idea']}")
+                st.write(f"**Significance**: {info['Significance']}")
+                st.write(f"**Famous Quote**: '{info['Quote']}'")
+    
+    with tab3:
+        st.subheader("Argument Analysis Guide")
+        
+        st.markdown("""
+        ## Steps for Analyzing Arguments
+        
+        1. **Identify the Conclusion**: What is the main point being argued?
+        2. **Find the Premises**: What evidence or reasons support the conclusion?
+        3. **Check for Hidden Assumptions**: What unstated beliefs are required?
+        4. **Evaluate Validity**: Does the conclusion follow logically from the premises?
+        5. **Assess Truth**: Are the premises actually true?
+        
+        ## Common Argument Forms
+        
+        **Deductive (All A are B, X is A, therefore X is B)**
+        - If premises are true, conclusion must be true
+        - Example: All humans are mortal, Socrates is human, therefore Socrates is mortal
+        
+        **Inductive (Pattern-based reasoning)**
+        - Premises make conclusion probable, not certain
+        - Example: The sun has risen every day in the past, therefore it will rise tomorrow
+        
+        **Abductive (Inference to best explanation)**
+        - Conclusion explains the evidence better than alternatives
+        - Example: The ground is wet, therefore it probably rained
+        
+        ## Argument Errors to Avoid
+        
+        - **Ad Hominem**: Attacking the person instead of their argument
+        - **Straw Man**: Misrepresenting someone's position to make it easier to attack
+        - **False Dichotomy**: Presenting only two options when more exist
+        - **Circular Reasoning**: Using the conclusion to support itself
+        - **Appeal to Authority**: Accepting a claim just because an authority said it
+        """)
+    
+    with tab4:
+        st.subheader("Study Tips & Strategies")
+        
+        st.markdown("""
+        ## Effective Philosophy Study Methods
+        
+        **Active Reading:**
+        - Ask questions as you read: "What is the main claim? What evidence supports it?"
+        - Summarize key points in your own words
+        - Look up unfamiliar terms immediately
+        
+        **Critical Analysis:**
+        - Don't just memorize - understand the reasoning
+        - Practice identifying premises and conclusions
+        - Consider alternative viewpoints and counterarguments
+        
+        **Discussion & Debate:**
+        - Explain concepts to others to test your understanding
+        - Engage in respectful philosophical discussions
+        - Be willing to change your mind when presented with better arguments
+        
+        **Writing Practice:**
+        - Write out arguments in standard form
+        - Practice defining vague or ambiguous terms
+        - Construct your own philosophical arguments
+        
+        ## Common Study Mistakes
+        
+        **Avoid these pitfalls:**
+        - Thinking philosophy is just about opinions (it's about reasoned arguments)
+        - Memorizing without understanding the logic
+        - Dismissing ideas without considering them carefully
+        - Confusing difficult with impossible to understand
+        
+        ## Quiz Preparation
+        
+        **Before taking the quiz:**
+        1. Review all learning modules thoroughly
+        2. Practice identifying arguments and their components
+        3. Make sure you can define key terms clearly
+        4. Understand the historical significance of major philosophers
+        5. Practice applying concepts to new examples
+        
+        **During the quiz:**
+        - Read questions carefully - philosophy is precise
+        - Eliminate obviously wrong answers first
+        - Consider what concepts each question is testing
+        - Don't overthink - your first careful analysis is often correct
+        """)
+
+elif page == "🔗 Resources & Links":
+    st.header("🔗 Philosophy Resources & External Links")
+    st.markdown("**Expand your philosophical knowledge with these curated resources**")
+    
+    # Create tabs for different resource categories
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["📚 Academic Resources", "🛠️ Logic Tools", "🎬 Videos & Podcasts", "📖 Classic Texts", "💻 Practice Platforms"])
+    
+    with tab1:
+        st.subheader("📚 Academic Databases & Encyclopedias")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("### 🎓 Primary Academic Sources")
+            
+            if st.button("📖 Stanford Encyclopedia of Philosophy", use_container_width=True):
+                st.markdown("**[Open Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/)**")
+                st.success("The most authoritative philosophy reference - peer-reviewed articles by experts on every philosophical topic.")
+                st.info("**Recommended articles**: Epistemology, Knowledge Analysis, Ancient Philosophy, Rationalism vs Empiricism")
+            
+            if st.button("📚 Internet Encyclopedia of Philosophy", use_container_width=True):
+                st.markdown("**[Open Internet Encyclopedia of Philosophy](https://iep.utm.edu/)**")
+                st.success("Comprehensive philosophy articles with more accessible language than SEP.")
+                st.info("**Recommended sections**: Epistemology, Pre-Socratic Philosophy, Indian Philosophy")
+            
+            if st.button("🔍 PhilPapers Database", use_container_width=True):
+                st.markdown("**[Search PhilPapers.org](https://philpapers.org/)**")
+                st.success("Search over 2.9 million philosophy papers and books.")
+                st.info("**Try searching**: 'epistemology basics', 'pre-socratic philosophy', 'knowledge definition'")
+        
+        with col2:
+            st.markdown("### 🏛️ University Resources")
+            
+            if st.button("🎓 MIT OpenCourseWare Philosophy", use_container_width=True):
+                st.markdown("**[Access MIT Philosophy Courses](https://ocw.mit.edu/courses/linguistics-and-philosophy/)**")
+                st.success("Free access to actual MIT philosophy course materials and lectures.")
+                st.info("**Recommended**: Introduction to Philosophy, Epistemology, Logic")
+            
+            if st.button("📺 Yale Open Courses", use_container_width=True):
+                st.markdown("**[Yale Philosophy Lectures](https://oyc.yale.edu/philosophy)**")
+                st.success("Full video lectures from Yale philosophy professors.")
+                st.info("**Start with**: Introduction to Philosophy (PHIL 181)")
+            
+            if st.button("📊 Philosophy Compass", use_container_width=True):
+                st.markdown("**[Philosophy Compass](https://onlinelibrary.wiley.com/journal/17479991)**")
+                st.success("Short, accessible surveys of philosophical topics.")
+                st.info("**Note**: May require library access through your institution")
+    
+    with tab2:
+        st.subheader("🛠️ Interactive Logic & Reasoning Tools")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("### ⚡ Logic Practice Tools")
+            
+            if st.button("🔬 MIT Logitext", use_container_width=True):
+                st.markdown("**[Open MIT Logitext](https://logitext.mit.edu/main)**")
+                st.success("Interactive logic tool for practicing propositional and predicate logic.")
+                st.code("Try this: (P ∧ Q) → R")
+                st.info("Perfect for understanding logical operators and argument forms!")
+            
+            if st.button("📊 Stanford Truth Table Tool", use_container_width=True):
+                st.markdown("**[Stanford Truth Table Generator](https://web.stanford.edu/class/cs103/tools/truth-table-tool/)**")
+                st.success("Generate truth tables for any logical expression.")
+                st.info("**Example**: Input 'P ∧ Q' to see how conjunction works")
+            
+            if st.button("🎯 Logic & Proofs Platform", use_container_width=True):
+                st.markdown("**[Open Logic & Proofs](https://logicinaction.org/)**")
+                st.success("Interactive exercises for learning formal logic step by step.")
+        
+        with col2:
+            st.markdown("### 📈 Argument Analysis Tools")
+            
+            if st.button("🗺️ Rationale Online", use_container_width=True):
+                st.markdown("**[Rationale Argument Mapping](https://www.rationaleonline.com/)**")
+                st.success("Visual argument analysis - map premises and conclusions.")
+                st.info("Great for understanding the structure of complex philosophical arguments")
+            
+            if st.button("🔍 Argument Clinic", use_container_width=True):
+                st.markdown("**[The Argument Clinic](https://www.criticalthinking.org.uk/)**")
+                st.success("Interactive critical thinking exercises and argument evaluation.")
+            
+            if st.button("📝 Critical Thinking Web", use_container_width=True):
+                st.markdown("**[Critical Thinking Web (UBC)](https://philosophy.hku.hk/think/)**")
+                st.success("University of Hong Kong's comprehensive critical thinking tutorials.")
+    
+    with tab3:
+        st.subheader("🎬 Educational Videos & Podcasts")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("### 🎧 Philosophy Podcasts")
+            
+            if st.button("🎭 Philosophy Bites", use_container_width=True):
+                st.markdown("**[Philosophy Bites Podcast](https://www.philosophybites.com/)**")
+                st.success("15-minute interviews with leading philosophers on key topics.")
+                st.info("**Start with**: 'What is Knowledge?' and 'The Importance of Philosophy'")
+            
+            if st.button("🧠 The History of Philosophy", use_container_width=True):
+                st.markdown("**[History of Philosophy Podcast](https://historyofphilosophy.net/)**")
+                st.success("Comprehensive journey through philosophical history without any gaps.")
+                st.info("**Episodes 1-20**: Perfect introduction to Pre-Socratic philosophers")
+            
+            if st.button("🤔 Philosophy Talk", use_container_width=True):
+                st.markdown("**[Philosophy Talk](https://www.philosophytalk.org/)**")
+                st.success("Stanford's radio show making philosophy accessible to everyone.")
+        
+        with col2:
+            st.markdown("### 📺 Educational Videos")
+            
+            if st.button("🎓 Crash Course Philosophy", use_container_width=True):
+                st.markdown("**[Crash Course Philosophy Playlist](https://www.youtube.com/playlist?list=PL8dPuuaLjXtNgK6MZucdYldNkMybYIHKR)**")
+                st.success("Engaging 10-minute videos covering major philosophical concepts.")
+                st.info("**Episode 8**: 'Knowledge & Skepticism' directly relates to our epistemology module")
+            
+            if st.button("🎬 TED-Ed Philosophy", use_container_width=True):
+                st.markdown("**[TED-Ed Philosophy Videos](https://www.youtube.com/results?search_query=TED-Ed+philosophy)**")
+                st.success("High-quality animated explanations of philosophical concepts.")
+                st.info("**Recommended**: 'Plato's Allegory of the Cave' and 'What is Consciousness?'")
+            
+            if st.button("🏛️ Academy of Ideas", use_container_width=True):
+                st.markdown("**[Academy of Ideas](https://www.youtube.com/c/AcademyofIdeas)**")
+                st.success("In-depth explorations of philosophical and psychological concepts.")
+    
+    with tab4:
+        st.subheader("📖 Classical Philosophy Texts")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("### 📜 Primary Sources")
+            
+            if st.button("📚 Project Gutenberg Philosophy", use_container_width=True):
+                st.markdown("**[Free Classical Philosophy Texts](https://www.gutenberg.org/ebooks/subject/11)**")
+                st.success("Free access to classic philosophical works in the public domain.")
+                st.info("**Includes**: Plato's dialogues, Aristotle's works, and more")
+            
+            if st.button("🏛️ Perseus Digital Library", use_container_width=True):
+                st.markdown("**[Perseus Ancient Philosophy](http://www.perseus.tufts.edu/)**")
+                st.success("Original Greek and Latin texts with English translations.")
+                st.info("**Perfect for**: Reading Pre-Socratic fragments in context")
+            
+            if st.button("📖 Sacred Texts - Philosophy", use_container_width=True):
+                st.markdown("**[Sacred-Texts Philosophy Section](https://www.sacred-texts.com/phi/)**")
+                st.success("Including the Upanishads and other Eastern philosophical texts.")
+                st.info("**Recommended**: The Principal Upanishads for 'That art thou' context")
+        
+        with col2:
+            st.markdown("### 🔖 Study Guides")
+            
+            if st.button("📝 SparkNotes Philosophy", use_container_width=True):
+                st.markdown("**[SparkNotes Philosophy Study Guides](https://www.sparknotes.com/philosophy/)**")
+                st.success("Accessible summaries of major philosophical works and thinkers.")
+                st.info("**Helpful for**: Quick reviews of philosopher's main ideas")
+            
+            if st.button("📊 Philosophy Study Guides", use_container_width=True):
+                st.markdown("**[Various University Study Guides](https://www.google.com/search?q=philosophy+study+guides+university)**")
+                st.success("Many universities provide free study guides for philosophy courses.")
+            
+            if st.button("🎯 CliffsNotes Philosophy", use_container_width=True):
+                st.markdown("**[CliffsNotes Philosophy](https://www.cliffsnotes.com/study-guides/philosophy)**")
+                st.success("Structured study guides for major philosophical topics.")
+    
+    with tab5:
+        st.subheader("💻 Interactive Practice Platforms")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("### 🎮 Philosophy Games & Quizzes")
+            
+            if st.button("🧩 Philosophical Health Check", use_container_width=True):
+                st.markdown("**[Philosophy Health Check](https://www.philosophyexperiments.com/)**")
+                st.success("Test the consistency of your philosophical beliefs.")
+                st.info("Interactive thought experiments that challenge your reasoning")
+            
+            if st.button("🎯 Philosophy Quiz Sites", use_container_width=True):
+                st.markdown("**[Various Philosophy Quizzes](https://www.sporcle.com/games/subcategory/philosophy)**")
+                st.success("Test your knowledge of philosophers, concepts, and arguments.")
+            
+            if st.button("🤔 Thought Experiment Hub", use_container_width=True):
+                st.markdown("**[Thought Experiments](https://www.google.com/search?q=interactive+philosophy+thought+experiments)**")
+                st.success("Explore classic philosophical puzzles interactively.")
+        
+        with col2:
+            st.markdown("### 📚 Study Communities")
+            
+            if st.button("💬 Reddit Philosophy", use_container_width=True):
+                st.markdown("**[r/philosophy](https://www.reddit.com/r/philosophy/)**")
+                st.success("Active discussions about philosophical topics.")
+                st.warning("**Remember**: Always verify information with academic sources")
+            
+            if st.button("🎓 Philosophy Forums", use_container_width=True):
+                st.markdown("**[Philosophy Forums](https://www.philosophyforums.com/)**")
+                st.success("Discuss philosophical questions with other students and enthusiasts.")
+            
+            if st.button("📱 Philosophy Apps", use_container_width=True):
+                st.markdown("**[Search App Stores](https://www.google.com/search?q=philosophy+apps+education)**")
+                st.success("Many mobile apps offer philosophy quizzes and concept reviews.")
+    
+    st.markdown("---")
+    st.subheader("🎯 How to Use These Resources Effectively")
+    
+    tip_cols = st.columns(3)
+    with tip_cols[0]:
+        st.markdown("""
+        **📖 For Deeper Learning**
+        - Use Stanford Encyclopedia for authoritative information
+        - Watch Crash Course videos for visual explanations
+        - Listen to Philosophy Bites for expert perspectives
+        """)
+    
+    with tip_cols[1]:
+        st.markdown("""
+        **🛠️ For Practice**
+        - Use logic tools to understand argument structure
+        - Try interactive exercises to test comprehension
+        - Join forums for discussion and debate
+        """)
+    
+    with tip_cols[2]:
+        st.markdown("""
+        **📚 For Research**
+        - Start with our learning modules for foundation
+        - Use PhilPapers for current scholarship
+        - Verify information across multiple sources
+        """)
+    
+    st.info("💡 **Study Tip**: Always return to our learning modules to connect external resources with course concepts!")
+
+elif page == "🤖 AI Philosophy Tutor":
+    st.header("🤖 AI Philosophy Tutor")
+    st.markdown("**Get personalized help with philosophical concepts and questions**")
+    
+    try:
+        import anthropic
+        
+        # Initialize Anthropic client
+        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+            
+        # Suggested questions
+        st.subheader("💡 Quick Help Topics")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("**Concepts & Definitions:**")
+                if st.button("What's the difference between knowledge and opinion?", use_container_width=True):
+                    st.session_state.current_question = "Explain the difference between knowledge and opinion, and how philosophers distinguish between them."
+                
+                if st.button("How do I identify premises and conclusions?", use_container_width=True):
+                    st.session_state.current_question = "How do I identify the premises and conclusion in a philosophical argument? Can you give me some examples?"
+                
+                if st.button("What made Thales revolutionary?", use_container_width=True):
+                    st.session_state.current_question = "Why was Thales considered revolutionary in the history of philosophy? What made his approach different?"
+            
+            with col2:
+                st.markdown("**Problem-Solving:**")
+                if st.button("Help me understand Zeno's paradoxes", use_container_width=True):
+                    st.session_state.current_question = "Can you explain Zeno's paradoxes and why they were philosophically important? How might we resolve them?"
+                
+                if st.button("Explain rationalism vs empiricism", use_container_width=True):
+                    st.session_state.current_question = "What's the difference between rationalism and empiricism in epistemology? Can you give examples of each?"
+                
+                if st.button("What does 'That art thou' mean?", use_container_width=True):
+                    st.session_state.current_question = "Explain the meaning and significance of 'That art thou' from the Upanishads. What philosophical insight does it convey?"
+            
+            # Initialize chat history
+            if 'tutor_chat_history' not in st.session_state:
+                st.session_state.tutor_chat_history = []
+            
+            # Handle suggested questions
+            if 'current_question' in st.session_state:
+                st.session_state.user_input = st.session_state.current_question
+                del st.session_state.current_question
+            
+            # Chat interface
+            st.subheader("💬 Ask Your Philosophy Tutor")
+            
+            # Display chat history
+            for i, (question, answer) in enumerate(st.session_state.tutor_chat_history):
+                with st.container():
+                    st.markdown(f"**🧠 You:** {question}")
+                    st.markdown(f"**🤖 Tutor:** {answer}")
+                    st.markdown("---")
+            
+            # User input
+            user_question = st.text_area(
+                "Ask your question:",
+                value=st.session_state.get('user_input', ''),
+                height=100,
+                placeholder="e.g., I'm confused about the difference between Heraclitus and Parmenides..."
+            )
+            
+            col1, col2 = st.columns([1, 4])
+            with col1:
+                ask_button = st.button("📚 Ask Tutor", type="primary")
+            with col2:
+                if st.button("🗑️ Clear Chat"):
+                    st.session_state.tutor_chat_history = []
+                    st.rerun()
+            
+            if ask_button and user_question.strip():
+                with st.spinner("🤔 Thinking about your question..."):
+                    try:
+                        # Create tutor prompt
+                        system_prompt = """You are a philosophy tutor helping students learn the fundamentals of philosophy and epistemology. Your role is to:
+
+1. Explain concepts clearly and accurately
+2. Help students understand rather than just giving answers
+3. Use Socratic questioning when appropriate
+4. Provide examples to illustrate abstract concepts
+5. Connect ideas to show how philosophical concepts relate
+6. Encourage critical thinking
+
+The course covers:
+- Nature of philosophy and its methods
+- Critical thinking and argument analysis
+- Epistemology (theory of knowledge)
+- Pre-Socratic philosophers (Thales, Heraclitus, Parmenides, Zeno)
+- Knowledge vs opinion
+- Eastern philosophy (Upanishads)
+- Philosophical claims, vagueness, and ambiguity
+
+Be encouraging and patient, but also challenge students to think deeply. When they ask for help understanding a concept, don't just define it - help them see why it matters and how it connects to other ideas."""
+
+                        # Get response from Claude
+                        message = client.messages.create(
+                            model="claude-3-haiku-20240307",
+                            max_tokens=1000,
+                            temperature=0.7,
+                            system=system_prompt,
+                            messages=[{
+                                "role": "user", 
+                                "content": user_question
+                            }]
+                        )
+                        
+                        response = message.content[0].text
+                        
+                        # Add to chat history
+                        st.session_state.tutor_chat_history.append((user_question, response))
+                        
+                        # Clear input
+                        st.session_state.user_input = ""
+                        
+                        # Rerun to show new response
+                        st.rerun()
+                        
+                    except Exception as e:
+                        st.error(f"Error getting response: {str(e)}")
+                        st.info("Please check your API key and try again.")
+        
+        except ImportError:
+            st.error("📦 Missing required library. Please install: `pip install anthropic`")
+    # Study tips
+    st.markdown("---")
+    st.subheader("💡 How to Use Your AI Tutor Effectively")
+    
+    tip_cols = st.columns(3)
+    with tip_cols[0]:
+        st.markdown("""
+        **🎯 Be Specific**
+        - Ask about particular concepts you're struggling with
+        - Provide context about what you do and don't understand
+        - Give examples when possible
+        """)
+    
+    with tip_cols[1]:
+        st.markdown("""
+        **🤔 Engage Actively**
+        - Ask follow-up questions
+        - Challenge ideas respectfully
+        - Connect new concepts to what you already know
+        """)
+    
+    with tip_cols[2]:
+        st.markdown("""
+        **📚 Apply Learning**
+        - Use the tutor to clarify learning module content
+        - Get help understanding quiz questions
+        - Practice explaining concepts in your own words
+        """)
+
+# Footer
+st.markdown("---")
+st.markdown("**Built for philosophical learning | Philosophy Foundations & Epistemology CognitiveCloud.ai**")
+st.caption("© 2024 Interactive Philosophy Education Platform")
