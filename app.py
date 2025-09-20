@@ -8,7 +8,7 @@ ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
 
 st.set_page_config(page_title="PHL201 Epistemology - CognitiveCloud.ai", layout="wide", initial_sidebar_state="expanded")
 
-# Epistemology-focused questions
+# Epistemology-focused questions - 35 total for maximum points
 questions = [
     ("What is epistemology?", 
      ["The study of being", "The study of knowledge and truth", "The study of ethics", "The study of logic"], 
@@ -88,7 +88,67 @@ questions = [
     
     ("Knowledge differs from opinion because:", 
      ["Knowledge is popular", "Knowledge has rational justification and corresponds to reality", "Knowledge is easier", "Knowledge never changes"], 
-     "Knowledge has rational justification and corresponds to reality")
+     "Knowledge has rational justification and corresponds to reality"),
+    
+    ("A posteriori knowledge requires:", 
+     ["Pure reasoning only", "Experience and observation", "Mathematical proof", "Authority confirmation"], 
+     "Experience and observation"),
+    
+    ("Internalism in epistemology holds that:", 
+     ["Knowledge comes from within", "The factors that justify belief must be accessible to the believer", "Only internal states exist", "External world is irrelevant"], 
+     "The factors that justify belief must be accessible to the believer"),
+    
+    ("Externalism in epistemology argues:", 
+     ["Only external things exist", "Justification can depend on factors outside the believer's awareness", "Knowledge is impossible", "Only empirical knowledge counts"], 
+     "Justification can depend on factors outside the believer's awareness"),
+    
+    ("The correspondence theory of truth states:", 
+     ["Truth is what most believe", "Truth consists in agreement of thoughts with reality", "Truth is whatever works", "Truth doesn't exist"], 
+     "Truth consists in agreement of thoughts with reality"),
+    
+    ("Epistemic circularity occurs when:", 
+     ["Using circular reasoning", "Using a source of knowledge to validate itself", "Avoiding all reasoning", "Only trusting authorities"], 
+     "Using a source of knowledge to validate itself"),
+    
+    ("The tripartite definition of knowledge requires:", 
+     ["Only truth", "Belief, truth, and justification", "Only justification", "Only belief"], 
+     "Belief, truth, and justification"),
+    
+    ("Fallibilism holds that:", 
+     ["We can never be wrong", "Knowledge doesn't require absolute certainty", "All beliefs are false", "Only certain beliefs count as knowledge"], 
+     "Knowledge doesn't require absolute certainty"),
+    
+    ("The regress problem in epistemology concerns:", 
+     ["Going backwards in time", "The infinite chain of justification for beliefs", "Forgetting information", "Repeating mistakes"], 
+     "The infinite chain of justification for beliefs"),
+    
+    ("Virtue epistemology focuses on:", 
+     ["Moral virtues only", "Intellectual virtues and excellences in knowing", "Social virtues", "Physical abilities"], 
+     "Intellectual virtues and excellences in knowing"),
+    
+    ("Contextualism in epistemology claims:", 
+     ["Context never matters", "Knowledge attributions are context-sensitive", "Only context matters", "Context is irrelevant to truth"], 
+     "Knowledge attributions are context-sensitive"),
+    
+    ("The value problem asks:", 
+     ["How much knowledge costs", "Why knowledge is more valuable than mere true belief", "Which knowledge is most important", "How to measure knowledge"], 
+     "Why knowledge is more valuable than mere true belief"),
+    
+    ("Modal epistemology deals with:", 
+     ["Only necessary truths", "Knowledge of possibility and necessity", "Only empirical facts", "Only logical truths"], 
+     "Knowledge of possibility and necessity"),
+    
+    ("What distinguishes knowledge from lucky guesses?", 
+     ["Knowledge is always certain", "Knowledge has proper justification and isn't accidental", "Knowledge is more popular", "Knowledge is simpler"], 
+     "Knowledge has proper justification and isn't accidental"),
+    
+    ("According to course readings, precise definition matters because:", 
+     ["It sounds academic", "Imprecise claims cannot be properly evaluated", "It makes arguments longer", "It confuses opponents"], 
+     "Imprecise claims cannot be properly evaluated"),
+    
+    ("The law of non-contradiction states:", 
+     ["Everything contradicts", "Something cannot both be and not be in the same respect at the same time", "All contradictions are true", "Logic is impossible"], 
+     "Something cannot both be and not be in the same respect at the same time")
 ]
 
 # Session state
@@ -232,7 +292,7 @@ with st.sidebar:
     page = st.radio("Choose Section:", [
         "Course Introduction", 
         "Core Modules",
-        "Knowledge Assessment", 
+        "Epistemology Quiz", 
         "Visualizations", 
         "Quick Reference",
         "Resources",
@@ -290,6 +350,96 @@ elif page == "Core Modules":
             st.write("1. What's something you're confident you know?")
             st.write("2. How do you decide whether to believe new information?")
             st.write("3. Is there a difference between knowing and being certain?")
+            
+            # Interactive LLM Discussion
+            st.markdown("---")
+            st.subheader("Discuss Your Responses with AI")
+            
+            # Initialize discussion history for this module
+            if 'module1_discussion' not in st.session_state:
+                st.session_state.module1_discussion = []
+            
+            # Question selector
+            selected_q = st.selectbox("Choose a question to discuss:", [
+                "Question 1: Something I'm confident I know",
+                "Question 2: How I decide whether to believe new information", 
+                "Question 3: Difference between knowing and being certain"
+            ])
+            
+            # User response input
+            user_response = st.text_area(
+                "Share your thoughts on this question:",
+                height=100,
+                placeholder="Type your response to the selected question..."
+            )
+            
+            if st.button("Discuss with AI Tutor", type="primary"):
+                if user_response.strip():
+                    try:
+                        import anthropic
+                        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+                        
+                        # Create context-aware prompt based on selected question
+                        if "Question 1" in selected_q:
+                            context = """The student is responding to: "What's something you're confident you know?" 
+                            This question explores the nature of confidence in knowledge claims and helps students examine their own epistemic commitments."""
+                        elif "Question 2" in selected_q:
+                            context = """The student is responding to: "How do you decide whether to believe new information?" 
+                            This question examines epistemic practices and criteria for belief formation."""
+                        else:
+                            context = """The student is responding to: "Is there a difference between knowing and being certain?" 
+                            This question explores the relationship between knowledge and certainty, a key epistemological issue."""
+                        
+                        system_prompt = f"""You are an epistemology tutor engaging in Socratic dialogue with a PHL201 student. {context}
+
+Your role is to:
+1. Acknowledge their response thoughtfully
+2. Ask 2-3 probing follow-up questions that deepen their thinking
+3. Connect their response to key epistemological concepts (JTB, justification, sources of knowledge, etc.)
+4. Help them see philosophical implications of their everyday examples
+5. Encourage further reflection without being preachy
+
+Be supportive but intellectually challenging. Help them discover insights rather than lecturing them."""
+
+                        message = client.messages.create(
+                            model="claude-3-sonnet-20240229",
+                            max_tokens=800,
+                            temperature=0.7,
+                            system=system_prompt,
+                            messages=[{
+                                "role": "user", 
+                                "content": f"Question: {selected_q}\n\nStudent response: {user_response}"
+                            }]
+                        )
+                        
+                        ai_response = message.content[0].text
+                        
+                        # Add to discussion history
+                        st.session_state.module1_discussion.append({
+                            "question": selected_q,
+                            "student_response": user_response,
+                            "ai_response": ai_response
+                        })
+                        
+                        # Display the discussion
+                        st.markdown("### AI Tutor Response")
+                        st.markdown(f"**Your Response**: {user_response}")
+                        st.markdown(f"**AI Tutor**: {ai_response}")
+                        
+                    except Exception as e:
+                        st.error("AI discussion temporarily unavailable. Please reflect on the questions independently.")
+            
+            # Display previous discussions
+            if st.session_state.module1_discussion:
+                st.markdown("### Previous Discussions")
+                for i, discussion in enumerate(st.session_state.module1_discussion):
+                    with st.expander(f"Discussion {i+1}: {discussion['question']}"):
+                        st.markdown(f"**Your Response**: {discussion['student_response']}")
+                        st.markdown(f"**AI Tutor**: {discussion['ai_response']}")
+                
+                if st.button("Clear Discussion History"):
+                    st.session_state.module1_discussion = []
+                    st.rerun()
     
     elif module == "Module 2: Knowledge vs. Belief":
         st.subheader("Knowledge vs. Belief and Opinion")
@@ -302,6 +452,72 @@ elif page == "Core Modules":
         st.write("- Personal judgment")
         st.write("- Limited evidence")
         st.write("- Reasonable disagreement possible")
+        
+        with st.expander("Interactive Discussion: Your Knowledge Claims"):
+            st.write("**Reflection Prompts:**")
+            st.write("- Think of a belief you hold strongly. What makes it knowledge vs. opinion?")
+            st.write("- Describe a time you changed your mind about something. What convinced you?")
+            st.write("- How do you handle disagreement with people you respect?")
+            
+            # LLM Discussion for Module 2
+            if 'module2_discussion' not in st.session_state:
+                st.session_state.module2_discussion = []
+            
+            discussion_prompt = st.text_area(
+                "Share your thoughts on knowledge vs. belief:",
+                height=100,
+                placeholder="Describe a belief you hold and explain why you think it counts as knowledge..."
+            )
+            
+            if st.button("Analyze with AI", key="mod2_discuss"):
+                if discussion_prompt.strip():
+                    try:
+                        import anthropic
+                        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+                        
+                        system_prompt = """You are helping a student analyze their knowledge claims using epistemological concepts. 
+
+Guide them to:
+1. Identify whether their example meets the traditional criteria for knowledge (belief, truth, justification)
+2. Examine the quality and source of their justification
+3. Consider potential challenges or limitations
+4. Distinguish knowledge from strongly held beliefs or opinions
+5. Apply course concepts like JTB analysis
+
+Ask probing questions that help them think more deeply about their epistemic commitments."""
+
+                        message = client.messages.create(
+                            model="claude-3-sonnet-20240229",
+                            max_tokens=700,
+                            temperature=0.7,
+                            system=system_prompt,
+                            messages=[{
+                                "role": "user", 
+                                "content": discussion_prompt
+                            }]
+                        )
+                        
+                        ai_response = message.content[0].text
+                        
+                        st.session_state.module2_discussion.append({
+                            "student_input": discussion_prompt,
+                            "ai_response": ai_response
+                        })
+                        
+                        st.markdown("### Analysis")
+                        st.markdown(f"**Your Example**: {discussion_prompt}")
+                        st.markdown(f"**AI Analysis**: {ai_response}")
+                        
+                    except Exception as e:
+                        st.error("Analysis temporarily unavailable.")
+            
+            # Show previous discussions
+            if st.session_state.module2_discussion:
+                st.markdown("### Previous Analyses")
+                for i, disc in enumerate(st.session_state.module2_discussion):
+                    with st.expander(f"Analysis {i+1}"):
+                        st.markdown(f"**Your Example**: {disc['student_input']}")
+                        st.markdown(f"**AI Analysis**: {disc['ai_response']}")
     
     elif module == "Module 3: The JTB Definition":
         st.subheader("The Classical Definition of Knowledge")
@@ -314,6 +530,63 @@ elif page == "Core Modules":
         st.write("- You believe it's raining")
         st.write("- It is actually raining")
         st.write("- You can see/hear the rain")
+        
+        with st.expander("Apply JTB Analysis"):
+            st.write("**Test cases against the JTB conditions:**")
+            st.write("Case 1: You believe your car is in the parking lot because you parked it there. It is there.")
+            st.write("Case 2: You believe your lottery ticket will win because you 'feel lucky.' It wins.")
+            
+            # Interactive JTB Analysis
+            if 'module3_discussion' not in st.session_state:
+                st.session_state.module3_discussion = []
+            
+            user_case = st.text_area(
+                "Describe your own example to test against JTB:",
+                height=100,
+                placeholder="Example: I believe/know that [something] because [reasons]..."
+            )
+            
+            if st.button("Test with JTB Analysis", key="mod3_jtb"):
+                if user_case.strip():
+                    try:
+                        import anthropic
+                        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+                        
+                        system_prompt = """You are helping a student apply the JTB (Justified True Belief) analysis to their example.
+
+Systematically evaluate their case:
+1. BELIEF: Do they believe the proposition?
+2. TRUTH: Is the proposition actually true? (consider this carefully)
+3. JUSTIFICATION: Do they have adequate reasons/evidence?
+
+Then determine: Does this count as knowledge under the JTB analysis?
+Consider potential problems: Is the justification strong enough? Could this be a Gettier-type case? 
+Help them understand the analysis process."""
+
+                        message = client.messages.create(
+                            model="claude-3-sonnet-20240229",
+                            max_tokens=600,
+                            temperature=0.7,
+                            system=system_prompt,
+                            messages=[{
+                                "role": "user", 
+                                "content": f"Please analyze this case using JTB: {user_case}"
+                            }]
+                        )
+                        
+                        ai_response = message.content[0].text
+                        
+                        st.session_state.module3_discussion.append({
+                            "case": user_case,
+                            "analysis": ai_response
+                        })
+                        
+                        st.markdown("### JTB Analysis Results")
+                        st.markdown(f"**Your Case**: {user_case}")
+                        st.markdown(f"**Analysis**: {ai_response}")
+                        
+                    except Exception as e:
+                        st.error("JTB analysis temporarily unavailable.")
     
     elif module == "Module 4: The Gettier Problem":
         st.subheader("The Gettier Problem")
@@ -325,6 +598,69 @@ elif page == "Core Modules":
         st.write("Plot twist: Smith gets the job and also has 10 coins!")
         
         st.write("Smith has justified true belief but not knowledge - it's just lucky coincidence.")
+        
+        with st.expander("Create Your Own Gettier Case"):
+            st.write("**Gettier Case Pattern:**")
+            st.write("1. Person has good evidence for false belief X")
+            st.write("2. From X, they infer conclusion Y")
+            st.write("3. By coincidence, Y happens to be true")
+            st.write("4. Result: Justified true belief without knowledge")
+            
+            if 'module4_discussion' not in st.session_state:
+                st.session_state.module4_discussion = []
+            
+            gettier_attempt = st.text_area(
+                "Try creating your own Gettier-style case:",
+                height=120,
+                placeholder="Describe a scenario where someone has justified true belief but not knowledge..."
+            )
+            
+            if st.button("Evaluate Gettier Case", key="mod4_gettier"):
+                if gettier_attempt.strip():
+                    try:
+                        import anthropic
+                        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+                        
+                        system_prompt = """You are evaluating whether a student has successfully created a Gettier-style case.
+
+A proper Gettier case needs:
+1. Justified true belief (meets JTB conditions)
+2. But intuitively NOT knowledge
+3. The truth is accidental/lucky relative to the justification
+4. The justification involves a false assumption
+
+Analyze their attempt:
+- Does it meet these criteria?
+- Is the belief justified, true, but not knowledge?
+- What makes it "gettiered"?
+- How could they improve it if needed?
+
+Be encouraging but precise about whether it works as a Gettier case."""
+
+                        message = client.messages.create(
+                            model="claude-3-sonnet-20240229",
+                            max_tokens=600,
+                            temperature=0.7,
+                            system=system_prompt,
+                            messages=[{
+                                "role": "user", 
+                                "content": f"Evaluate this potential Gettier case: {gettier_attempt}"
+                            }]
+                        )
+                        
+                        ai_response = message.content[0].text
+                        
+                        st.session_state.module4_discussion.append({
+                            "attempt": gettier_attempt,
+                            "evaluation": ai_response
+                        })
+                        
+                        st.markdown("### Gettier Case Evaluation")
+                        st.markdown(f"**Your Case**: {gettier_attempt}")
+                        st.markdown(f"**Evaluation**: {ai_response}")
+                        
+                    except Exception as e:
+                        st.error("Evaluation temporarily unavailable.")
     
     elif module == "Module 5: Rationalism vs. Empiricism":
         st.subheader("Sources of Knowledge: Rationalism vs. Empiricism")
@@ -340,9 +676,66 @@ elif page == "Core Modules":
         st.write("- Knowledge is a posteriori (requires experience)")
         st.write("- Scientific observation as paradigm")
         st.write("- Key figures: Locke, Hume")
+        
+        with st.expander("Classify Your Knowledge Sources"):
+            st.write("**Think about how you learned different things:**")
+            st.write("- Mathematical facts (2+2=4)")
+            st.write("- Scientific facts (water boils at 100°C)")
+            st.write("- Personal experiences (your birthday)")
+            st.write("- Logical principles (if A=B and B=C, then A=C)")
+            
+            if 'module5_discussion' not in st.session_state:
+                st.session_state.module5_discussion = []
+            
+            knowledge_example = st.text_area(
+                "Describe something you know and how you learned it:",
+                height=100,
+                placeholder="I know that [something] and I learned this through [reason/experience/both]..."
+            )
+            
+            if st.button("Analyze Knowledge Source", key="mod5_source"):
+                if knowledge_example.strip():
+                    try:
+                        import anthropic
+                        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+                        
+                        system_prompt = """You are helping a student classify their knowledge according to rationalist vs. empiricist categories.
 
-elif page == "Knowledge Assessment":
-    st.header("Test Your Epistemological Understanding")
+Analyze their example:
+1. Is this a priori (knowable through reason alone) or a posteriori (requires experience)?
+2. What role does reason play vs. sensory experience?
+3. How does this fit with rationalist vs. empiricist approaches?
+4. Are there elements of both reason and experience involved?
+
+Help them see the complexity - most knowledge involves both rational and empirical elements. Connect to the historical debate between rationalists and empiricists."""
+
+                        message = client.messages.create(
+                            model="claude-3-sonnet-20240229",
+                            max_tokens=600,
+                            temperature=0.7,
+                            system=system_prompt,
+                            messages=[{
+                                "role": "user", 
+                                "content": f"Analyze the knowledge source in this example: {knowledge_example}"
+                            }]
+                        )
+                        
+                        ai_response = message.content[0].text
+                        
+                        st.session_state.module5_discussion.append({
+                            "example": knowledge_example,
+                            "analysis": ai_response
+                        })
+                        
+                        st.markdown("### Knowledge Source Analysis")
+                        st.markdown(f"**Your Example**: {knowledge_example}")
+                        st.markdown(f"**Analysis**: {ai_response}")
+                        
+                    except Exception as e:
+                        st.error("Analysis temporarily unavailable.")
+
+elif page == "Epistemology Quiz":
+    st.header("PHL201 Epistemology Knowledge Quiz")
     
     show_score()
     
@@ -350,7 +743,7 @@ elif page == "Knowledge Assessment":
         show_question()
     else:
         st.balloons()
-        st.success(f"Assessment Complete! Final Score: {st.session_state.score} XP")
+        st.success(f"Quiz Complete! Final Score: {st.session_state.score} XP")
         
         total_possible = len(st.session_state.questions) * 10
         percentage = (st.session_state.score / total_possible) * 100
