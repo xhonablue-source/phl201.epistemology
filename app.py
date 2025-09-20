@@ -1,7 +1,7 @@
 **Case 3**: Sarah believes there are books in the library because libraries typically contain books. There are indeed books in the library.
-            - Belief? ✓
-            - Truth? ✓
-            - Justification? ✓ (Reasonable inference from general knowledge)
+            - Belief? Yes
+            - Truth? Yes
+            - Justification? Yes (Reasonable inference from general knowledge)
             - **Conclusion**: Knowledge
             
             **Your Turn**: Think of something you believe you know. Does it satisfy all three JTB conditions?
@@ -796,15 +796,15 @@
             **Test these cases against the JTB conditions:**
             
             **Case 1**: Maria believes her car is in the parking lot because she parked it there this morning. Her car is indeed in the parking lot.
-            - Belief? ✓ 
-            - Truth? ✓ 
-            - Justification? ✓ (Memory of parking it)
+            - Belief? Yes 
+            - Truth? Yes 
+            - Justification? Yes (Memory of parking it)
             - **Conclusion**: Knowledge
             
             **Case 2**: John believes his lottery ticket will win because he "feels lucky." By an incredible coincidence, his ticket actually wins.
-            - Belief? ✓
-            - Truth? ✓
-            - Justification? ✗ (Feeling lucky isn't adequate justification)
+            - Belief? Yes
+            - Truth? Yes
+            - Justification? No (Feeling lucky isn't adequate justification)
             - **Conclusion**: Not knowledge (lucky guess)
             
             **Case 3**: Sarah believes there are books in the library because libraries typically contain books. Thereelif page == "🤖 Epistemology AI Tutor":
