@@ -1,1329 +1,815 @@
-import streamlit as st
-import numpy as np
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-from typing import List, Dict, Optional
-import random
-
-# 🔐 SECURE API KEY HANDLING
-ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
-
-st.set_page_config(page_title="Philosophy Foundations & Epistemology CognitiveCloud.ai", layout="wide", initial_sidebar_state="expanded")
-
-# 35 comprehensive philosophy questions
-questions = [
-    ("What is the primary purpose of philosophy?", 
-     ["To memorize historical facts", "To examine fundamental questions about reality, knowledge, and existence", "To debate politics", "To study literature"], 
-     "To examine fundamental questions about reality, knowledge, and existence"),
-    
-    ("A philosophical claim must be:", 
-     ["Always true", "A statement that can be either true or false", "An opinion without evidence", "A religious belief"], 
-     "A statement that can be either true or false"),
-    
-    ("What makes a claim 'vague' in philosophical terms?", 
-     ["It uses complex vocabulary", "It uses words that are not precise or whose boundaries are unclear", "It disagrees with common opinion", "It refers to abstract concepts"], 
-     "It uses words that are not precise or whose boundaries are unclear"),
-    
-    ("An ambiguous claim is one that:", 
-     ["Is definitely false", "Uses words that can have several possible meanings", "Is too simple", "Cannot be understood"], 
-     "Uses words that can have several possible meanings"),
-    
-    ("What is epistemology?", 
-     ["The study of being and existence", "The attempt to determine what knowledge and truth are", "The study of ethics and morality", "The analysis of logical arguments"], 
-     "The attempt to determine what knowledge and truth are"),
-    
-    ("A philosophical argument consists of:", 
-     ["Only a conclusion", "Premises and a conclusion together", "Questions without answers", "Emotional appeals"], 
-     "Premises and a conclusion together"),
-    
-    ("How can we avoid vagueness in philosophical claims?", 
-     ["Use more complex language", "Define important terms through examples, synonyms, or clear explanations", "Avoid difficult topics", "Only discuss well-known ideas"], 
-     "Define important terms through examples, synonyms, or clear explanations"),
-    
-    ("Thales is important to Western philosophy because he:", 
-     ["Wrote the first philosophy textbook", "Was the first to seek natural rather than supernatural explanations", "Founded the first university", "Discovered mathematics"], 
-     "Was the first to seek natural rather than supernatural explanations"),
-    
-    ("According to Thales, what is the fundamental substance of all things?", 
-     ["Fire", "Air", "Water", "Earth"], 
-     "Water"),
-    
-    ("Heraclitus believed that the fundamental nature of reality is:", 
-     ["Permanent and unchanging", "Constant change and flux", "Mathematical in nature", "Purely spiritual"], 
-     "Constant change and flux"),
-    
-    ("Heraclitus's famous statement 'You cannot step into the same river twice' illustrates:", 
-     ["The permanence of nature", "The reality of constant change", "The importance of water", "The difficulty of travel"], 
-     "The reality of constant change"),
-    
-    ("Parmenides argued that:", 
-     ["Everything is constantly changing", "Change is an illusion and reality is permanent and unified", "Knowledge is impossible", "Only mathematics is real"], 
-     "Change is an illusion and reality is permanent and unified"),
-    
-    ("Zeno's paradoxes were designed to:", 
-     ["Prove that mathematics is false", "Support Parmenides' view that motion and change are impossible", "Show that time doesn't exist", "Demonstrate the power of logic"], 
-     "Support Parmenides' view that motion and change are impossible"),
-    
-    ("In Zeno's paradox of Achilles and the tortoise:", 
-     ["Achilles can never catch the tortoise because he must always reach where the tortoise was", "Achilles easily wins the race", "The tortoise moves faster than Achilles", "Distance is an illusion"], 
-     "Achilles can never catch the tortoise because he must always reach where the tortoise was"),
-    
-    ("The Upanishads teach that:", 
-     ["Individual souls are separate from ultimate reality", "Individual souls (Atman) are identical with ultimate reality (Brahman)", "Knowledge is impossible", "Only gods can understand truth"], 
-     "Individual souls (Atman) are identical with ultimate reality (Brahman)"),
-    
-    ("The statement 'That art thou' (Tat tvam asi) means:", 
-     ["You are separate from the divine", "You are identical with the ultimate reality of the universe", "You cannot know the truth", "You must worship external gods"], 
-     "You are identical with the ultimate reality of the universe"),
-    
-    ("The Pre-Socratic philosophers were primarily concerned with:", 
-     ["Political theory", "Discovering the ultimate constituents and nature of reality", "Religious practices", "Artistic expression"], 
-     "Discovering the ultimate constituents and nature of reality"),
-    
-    ("What distinguishes philosophy from mythology in explaining natural phenomena?", 
-     ["Philosophy is older than mythology", "Philosophy seeks natural, rational explanations rather than supernatural ones", "Philosophy is easier to understand", "Philosophy doesn't ask questions"], 
-     "Philosophy seeks natural, rational explanations rather than supernatural ones"),
-    
-    ("In constructing philosophical arguments, premises should:", 
-     ["Always be controversial", "Provide logical support for the conclusion", "Be based on emotion", "Avoid evidence"], 
-     "Provide logical support for the conclusion"),
-    
-    ("When we put an argument in 'standard form,' we:", 
-     ["Make it more confusing", "List the premises first, then the conclusion with 'therefore'", "Remove all logic", "Add emotional appeals"], 
-     "List the premises first, then the conclusion with 'therefore'"),
-    
-    ("What is the difference between theoretical and anarchic thinking (as discussed in epistemology)?", 
-     ["They study different subjects", "Theoretical thinking seeks one correct view; anarchic thinking accepts multiple valid perspectives", "They use different languages", "One is ancient, one is modern"], 
-     "Theoretical thinking seeks one correct view; anarchic thinking accepts multiple valid perspectives"),
-    
-    ("The concept that 'being and truth are convertible' means:", 
-     ["They are completely different", "Reality and our thinking about it share the same underlying structure", "Truth doesn't exist", "Being is purely mental"], 
-     "Reality and our thinking about it share the same underlying structure"),
-    
-    ("What makes philosophy different from other academic disciplines?", 
-     ["It only studies ancient texts", "It examines the fundamental assumptions that other fields take for granted", "It requires no reasoning", "It focuses only on practical problems"], 
-     "It examines the fundamental assumptions that other fields take for granted"),
-    
-    ("Epistemological questions primarily concern:", 
-     ["What exists in the physical world", "What we can know and how we can know it", "What we should do morally", "How governments should be organized"], 
-     "What we can know and how we can know it"),
-    
-    ("The philosophical method emphasizes:", 
-     ["Accepting traditional authorities without question", "Critical examination and reasoned argument", "Emotional responses only", "Practical applications without theory"], 
-     "Critical examination and reasoned argument"),
-    
-    ("According to philosophical tradition, knowledge differs from mere opinion because:", 
-     ["Knowledge is always practical", "Knowledge has rational justification and corresponds to reality", "Knowledge is more popular", "Knowledge changes constantly"], 
-     "Knowledge has rational justification and corresponds to reality"),
-    
-    ("The problem of the criterion in epistemology refers to:", 
-     ["Difficulty in measuring knowledge", "The circular challenge of needing criteria for truth to establish criteria for truth", "The cost of education", "The time required for learning"], 
-     "The circular challenge of needing criteria for truth to establish criteria for truth"),
-    
-    ("In philosophical discourse, ad hominem arguments are problematic because they:", 
-     ["Are too complex", "Attack the person rather than addressing their arguments", "Take too much time", "Require advanced education"], 
-     "Attack the person rather than addressing their arguments"),
-    
-    ("The law of non-contradiction states that:", 
-     ["Everything is contradictory", "Something cannot both be and not be in the same respect at the same time", "Contradictions are always true", "Logic is impossible"], 
-     "Something cannot both be and not be in the same respect at the same time"),
-    
-    ("Skepticism in philosophy refers to:", 
-     ["Accepting everything as true", "Questioning whether certain or any knowledge is possible", "Believing only in science", "Rejecting all questions"], 
-     "Questioning whether certain or any knowledge is possible"),
-    
-    ("The correspondence theory of truth holds that:", 
-     ["Truth is what most people believe", "Truth consists in the agreement of our thoughts with reality", "Truth is whatever works practically", "Truth doesn't exist"], 
-     "Truth consists in the agreement of our thoughts with reality"),
-    
-    ("Rationalism in epistemology emphasizes:", 
-     ["Only emotional knowledge", "Reason and logic as primary sources of knowledge", "Only sensory experience", "Random guessing"], 
-     "Reason and logic as primary sources of knowledge"),
-    
-    ("Empiricism in epistemology emphasizes:", 
-     ["Only logical reasoning", "Sensory experience as the primary source of knowledge", "Divine revelation", "Mathematical proof only"], 
-     "Sensory experience as the primary source of knowledge"),
-    
-    ("The philosophical concept of 'a priori' knowledge refers to:", 
-     ["Knowledge gained after experience", "Knowledge that can be known independently of experience", "Knowledge that requires tools", "Knowledge from authorities"], 
-     "Knowledge that can be known independently of experience"),
-    
-    ("What is the fundamental insight of the philosophical revolution begun by Thales?", 
-     ["Religious explanations are always correct", "Natural phenomena can be explained through rational inquiry rather than mythology", "Mathematics is the only true knowledge", "Human knowledge is impossible"], 
-     "Natural phenomena can be explained through rational inquiry rather than mythology")
-]
-
-# Session state for quiz control
-if 'questions' not in st.session_state:
-    st.session_state.questions = questions
-if 'current' not in st.session_state:
-    st.session_state.current = 0
-if 'score' not in st.session_state:
-    st.session_state.score = 0
-if 'feedback' not in st.session_state:
-    st.session_state.feedback = None
-if 'selected_answer' not in st.session_state:
-    st.session_state.selected_answer = None
-if 'answered' not in st.session_state:
-    st.session_state.answered = False
-
-def show_question():
-    """Display current question with enhanced UI"""
-    if st.session_state.current < len(st.session_state.questions):
-        q, opts, correct = st.session_state.questions[st.session_state.current]
-        
-        # Progress bar
-        progress = (st.session_state.current + 1) / len(st.session_state.questions)
-        st.progress(progress, text=f"Question {st.session_state.current + 1} of {len(st.session_state.questions)}")
-        
-        st.subheader(f"Question {st.session_state.current + 1}")
-        st.write(f"**{q}**")
-        
-        # Radio button for answers
-        if not st.session_state.answered:
-            ans = st.radio("Choose your answer:", opts, key=f"q{st.session_state.current}")
-            st.session_state.selected_answer = ans
+**Case 3**: Sarah believes there are books in the library because libraries typically contain books. There are indeed books in the library.
+            - Belief? ✓
+            - Truth? ✓
+            - Justification? ✓ (Reasonable inference from general knowledge)
+            - **Conclusion**: Knowledge
             
-            col1, col2, col3 = st.columns([1, 1, 2])
-            with col1:
-                if st.button("Submit Answer", type="primary"):
-                    if ans == correct:
-                        st.session_state.feedback = ("success", "✅ Correct! +10 XP")
-                        st.session_state.score += 10
-                    else:
-                        st.session_state.feedback = ("error", f"❌ Incorrect. The answer is: **{correct}**")
-                    st.session_state.answered = True
-                    st.rerun()
-        else:
-            # Show the question and selected answer when answered
-            st.write(f"**Your answer:** {st.session_state.selected_answer}")
-            show_feedback()
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("Next Question", type="primary"):
-                    st.session_state.current += 1
-                    st.session_state.answered = False
-                    st.session_state.feedback = None
-                    st.session_state.selected_answer = None
-                    st.rerun()
-            with col2:
-                if st.button("Skip to End"):
-                    st.session_state.current = len(st.session_state.questions)
-                    st.rerun()
-
-def show_feedback():
-    """Display feedback with enhanced styling"""
-    if st.session_state.feedback:
-        typ, msg = st.session_state.feedback
-        if typ == "success":
-            st.success(msg)
-        else:
-            st.error(msg)
-
-def show_score():
-    """Display current score with styling"""
-    col1, col2, col3 = st.columns(3)
-    with col2:
-        st.metric("Current Score", f"{st.session_state.score} XP", 
-                 delta=f"{st.session_state.current} answered")
-
-def restart_quiz():
-    """Reset quiz state"""
-    if st.button("🔄 Restart Quiz", type="secondary"):
-        st.session_state.current = 0
-        st.session_state.score = 0
-        st.session_state.feedback = None
-        st.session_state.selected_answer = None
-        st.session_state.answered = False
-        st.rerun()
-
-def create_visualizations():
-    """Create philosophical concept visualizations"""
-    st.header("📊 Philosophy Concept Visualizations")
-    
-    tab1, tab2, tab3, tab4 = st.tabs(["Argument Structure", "Knowledge Sources", "Early Philosophers Timeline", "Epistemological Concepts"])
-    
-    with tab1:
-        st.subheader("Philosophical Argument Structure")
-        
-        # Argument visualization
-        fig = go.Figure()
-        
-        # Premises flowing to conclusion
-        fig.add_shape(type="rect", x0=1, y0=3, x1=3, y1=4, 
-                     fillcolor="lightblue", line=dict(color="blue"))
-        fig.add_annotation(x=2, y=3.5, text="Premise 1", showarrow=False, font=dict(size=12))
-        
-        fig.add_shape(type="rect", x0=1, y0=2, x1=3, y1=3, 
-                     fillcolor="lightblue", line=dict(color="blue"))
-        fig.add_annotation(x=2, y=2.5, text="Premise 2", showarrow=False, font=dict(size=12))
-        
-        # Arrow pointing to conclusion
-        fig.add_annotation(x=2, y=1.7, ax=2, ay=2, 
-                          arrowhead=2, arrowsize=1, arrowwidth=2, arrowcolor="red")
-        
-        fig.add_shape(type="rect", x0=1, y0=0.5, x1=3, y1=1.5, 
-                     fillcolor="lightcoral", line=dict(color="red"))
-        fig.add_annotation(x=2, y=1, text="Therefore:\nConclusion", showarrow=False, font=dict(size=12))
-        
-        fig.update_layout(
-            title="Standard Argument Form",
-            xaxis=dict(range=[0, 4], showgrid=False, showticklabels=False),
-            yaxis=dict(range=[0, 5], showgrid=False, showticklabels=False),
-            showlegend=False,
-            height=400
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.info("**Key Insight**: Valid arguments have premises that logically support their conclusions. The structure matters as much as the content.")
-    
-    with tab2:
-        st.subheader("Sources of Knowledge in Epistemology")
-        
-        # Knowledge sources pie chart
-        sources = ['Sensory Experience (Empiricism)', 'Reason & Logic (Rationalism)', 
-                  'Intuition', 'Authority', 'Revelation']
-        values = [35, 30, 15, 12, 8]
-        colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57']
-        
-        fig = go.Figure(data=[go.Pie(labels=sources, values=values, hole=.3)])
-        fig.update_traces(hoverinfo="label+percent", textinfo="label+percent", 
-                         textfont_size=10, marker=dict(colors=colors))
-        fig.update_layout(title="Epistemological Sources of Knowledge", height=500)
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.markdown("""
-        **Rationalism**: Knowledge primarily through reason (Plato, Descartes)
-        
-        **Empiricism**: Knowledge primarily through sensory experience (Aristotle, Hume)
-        
-        **Critical Question**: How do we determine which source is most reliable?
-        """)
-    
-    with tab3:
-        st.subheader("Early Philosophers Timeline")
-        
-        philosophers = [
-            ("Thales", -624, "Water is the fundamental substance"),
-            ("Heraclitus", -535, "Everything flows - constant change"),
-            ("Parmenides", -515, "Change is illusion - Being is One"),
-            ("Zeno", -490, "Paradoxes supporting Parmenides"),
-            ("Democritus", -460, "Atomic theory of matter")
-        ]
-        
-        fig = go.Figure()
-        
-        for i, (name, year, idea) in enumerate(philosophers):
-            fig.add_trace(go.Scatter(
-                x=[year], y=[i], 
-                mode='markers+text',
-                text=[name], 
-                textposition="middle right",
-                marker=dict(size=15, color='blue'),
-                name=name,
-                hovertext=f"{name} ({year} BCE): {idea}"
-            ))
-        
-        fig.update_layout(
-            title="Pre-Socratic Philosophers Timeline",
-            xaxis_title="Year (BCE)",
-            yaxis=dict(showticklabels=False),
-            height=400,
-            showlegend=False
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.info("These thinkers began the shift from mythological to rational explanations of natural phenomena.")
-    
-    with tab4:
-        st.subheader("Epistemological Concepts Network")
-        
-        # Create a network-style visualization of epistemological concepts
-        concepts = ['Knowledge', 'Truth', 'Belief', 'Justification', 'Skepticism', 'Certainty']
-        
-        # Create positions for concepts in a circle
-        angles = np.linspace(0, 2*np.pi, len(concepts), endpoint=False)
-        x_pos = np.cos(angles)
-        y_pos = np.sin(angles)
-        
-        fig = go.Figure()
-        
-        # Add nodes
-        fig.add_trace(go.Scatter(
-            x=x_pos, y=y_pos,
-            mode='markers+text',
-            text=concepts,
-            textposition="middle center",
-            marker=dict(size=60, color='lightblue', line=dict(width=2, color='blue')),
-            name="Concepts"
-        ))
-        
-        # Add connections between related concepts
-        connections = [(0,1), (0,2), (0,3), (1,3), (2,3), (4,0), (5,1)]
-        for start, end in connections:
-            fig.add_trace(go.Scatter(
-                x=[x_pos[start], x_pos[end]], 
-                y=[y_pos[start], y_pos[end]],
-                mode='lines',
-                line=dict(width=1, color='gray'),
-                showlegend=False
-            ))
-        
-        fig.update_layout(
-            title="Interconnected Epistemological Concepts",
-            xaxis=dict(showgrid=False, showticklabels=False),
-            yaxis=dict(showgrid=False, showticklabels=False),
-            height=500,
-            showlegend=False
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.markdown("""
-        **Central Question**: What is the relationship between knowledge, truth, and justified belief?
-        
-        **Classical Definition**: Knowledge = Justified True Belief (+ Gettier conditions)
-        """)
-
-# Main Application Layout
-st.title("🧠 Philosophy Foundations & Epistemology CognitiveCloud.ai")
-st.markdown("**Comprehensive Interactive Philosophy Learning Platform**")
-
-# Sidebar for navigation
-with st.sidebar:
-    st.header("📚 Navigation")
-    page = st.radio("Choose Section:", [
-        "Course Overview", 
-        "📖 Learning Modules",
-        "🎯 Interactive Quiz", 
-        "📊 Visualizations", 
-        "📚 Reference Guide",
-        "🔗 Resources & Links",
-        "🤖 AI Philosophy Tutor"
-    ])
-    
-    st.markdown("---")
-    st.subheader("📈 Your Progress")
-    if st.session_state.questions:
-        progress_pct = (st.session_state.current / len(st.session_state.questions)) * 100
-        st.metric("Quiz Completion", f"{progress_pct:.1f}%")
-        st.metric("Score", f"{st.session_state.score} XP")
-
-# Main content based on page selection
-if page == "Course Overview":
-    st.header("🌟 Philosophy Foundations & Epistemology")
-    
-    st.markdown("""
-    Welcome to your comprehensive introduction to philosophical thinking and the theory of knowledge!
-    
-    ## 🎯 What You'll Learn
-    
-    **Core Philosophy Skills:**
-    - How to identify and construct valid philosophical arguments
-    - How to avoid vague and ambiguous claims
-    - How to think critically about fundamental questions
-    - How to distinguish philosophy from other fields of inquiry
-    
-    **Epistemology - The Theory of Knowledge:**
-    - What is knowledge and how does it differ from opinion?
-    - What are the sources of human knowledge?
-    - How can we determine what is true?
-    - What are the limits of human knowledge?
-    
-    **Historical Foundations:**
-    - The Pre-Socratic revolution: from myth to rational inquiry
-    - Thales and the search for natural explanations
-    - Heraclitus vs. Parmenides: change vs. permanence
-    - Eastern philosophy: the Upanishads and ultimate reality
-    
-    ## 🔍 Key Philosophical Questions
-    
-    This course addresses fundamental questions that humans have pondered for millennia:
-    - What can we really know about reality?
-    - How should we distinguish truth from opinion?
-    - What is the relationship between thinking and being?
-    - How do we construct valid arguments?
-    
-    ## 📚 Learning Path
-    
-    1. **Start with Learning Modules** - Master core concepts
-    2. **Take the Interactive Quiz** - Test your understanding
-    3. **Explore Visualizations** - See concepts in action
-    4. **Use the Reference Guide** - Quick lookup of key terms
-    5. **Chat with AI Tutor** - Get personalized help
-    """)
-
-elif page == "📖 Learning Modules":
-    st.header("📖 Core Learning Modules")
-    
-    module = st.selectbox("Choose a learning module:", [
-        "Module 1: What is Philosophy?",
-        "Module 2: Critical Thinking & Arguments", 
-        "Module 3: Epistemology - Theory of Knowledge",
-        "Module 4: Pre-Socratic Philosophers",
-        "Module 5: Knowledge vs. Opinion",
-        "Module 6: Eastern Philosophy - The Upanishads"
-    ])
-    
-    if module == "Module 1: What is Philosophy?":
-        st.subheader("What is Philosophy?")
-        
-        st.markdown("""
-        ## Definition and Purpose
-        
-        Philosophy is the systematic examination of fundamental questions about reality, knowledge, values, reason, mind, and existence. Unlike other academic disciplines that study specific aspects of the world, philosophy examines the basic assumptions that underlie all human inquiry.
-        
-        ## What Makes Philosophy Unique?
-        
-        **Philosophy differs from other fields because it:**
-        - Questions assumptions that other disciplines take for granted
-        - Uses rational argument and critical analysis as primary methods
-        - Addresses questions that cannot be answered by empirical observation alone
-        - Seeks to understand the most fundamental aspects of existence
-        
-        ## Core Areas of Philosophy
-        
-        **Metaphysics**: What exists? What is the nature of reality?
-        
-        **Epistemology**: What can we know? How do we know it?
-        
-        **Ethics**: What should we do? What makes actions right or wrong?
-        
-        **Logic**: What makes arguments valid? How should we reason?
-        
-        **Aesthetics**: What is beauty? What makes art valuable?
-        
-        ## The Philosophical Method
-        
-        Philosophy proceeds through:
-        1. **Careful analysis** of concepts and arguments
-        2. **Critical evaluation** of claims and reasoning
-        3. **Systematic construction** of theories and explanations
-        4. **Rigorous testing** of ideas through debate and reflection
-        
-        ## Why Study Philosophy?
-        
-        Philosophy develops critical thinking skills essential for:
-        - Analyzing complex problems in any field
-        - Evaluating arguments and evidence
-        - Clarifying concepts and assumptions
-        - Understanding the foundations of knowledge and ethics
-        """)
-        
-        with st.expander("💡 Practice Questions"):
-            st.markdown("""
-            **Reflection Questions:**
-            1. How does philosophy differ from science in its approach to understanding reality?
-            2. What assumptions do you make in your daily life that philosophy might question?
-            3. Why might it be important to examine our fundamental beliefs?
+            **Your Turn**: Think of something you believe you know. Does it satisfy all three JTB conditions?
             """)
     
-    elif module == "Module 2: Critical Thinking & Arguments":
-        st.subheader("Critical Thinking & Philosophical Arguments")
+    elif module == "Module 6: The Gettier Problem and Beyond":
+        st.subheader("The Gettier Problem and Its Aftermath")
         
         st.markdown("""
-        ## Philosophical Claims
+        ## The Revolutionary Paper
         
-        A **philosophical claim** is a statement that can be either true or false. Philosophy proceeds by making, examining, and evaluating such claims.
+        In 1963, Edmund Gettier published a three-page paper titled "Is Justified True Belief Knowledge?" that fundamentally changed epistemology. Gettier showed that the classical JTB analysis, accepted for over 2000 years, was insufficient. He presented cases where someone has justified true belief but intuitively lacks knowledge.
         
-        **Examples of philosophical claims:**
-        - "Knowledge requires justified true belief"
-        - "Reality is fundamentally mental rather than physical"
-        - "Free will is incompatible with determinism"
+        ## Gettier's Original Cases
         
-        ## Problems: Vagueness and Ambiguity
+        **Case I: The Job Interview**
         
-        **Vague claims** use words that are not precise or whose boundaries are unclear.
-        - Example: "Old people should not drive" (How old is "old"?)
+        Smith and Jones have applied for the same job. Smith has strong evidence for the following compound proposition:
+        - Jones will get the job, AND Jones has 10 coins in his pocket
         
-        **Ambiguous claims** use words that can have several possible meanings.
-        - Example: "The bank is closed" (Financial institution or river bank?)
+        Smith's evidence:
+        - The company president told him Jones would get the job
+        - Smith counted the coins in Jones's pocket
         
-        ## Solutions: Achieving Clarity
+        From this, Smith infers: "The man who will get the job has 10 coins in his pocket"
         
-        **Three ways to define unclear terms:**
+        **The twist**: Unknown to Smith, he (Smith) will actually get the job, and Smith also happens to have 10 coins in his pocket.
         
-        1. **Examples**: Define "furniture" by listing tables, chairs, desks, etc.
-        2. **Synonyms**: Define "canine" as "dog"
-        3. **Explanations**: Provide a clear statement of what the term means
+        **Analysis**:
+        - Smith believes "The man who will get the job has 10 coins"
+        - This belief is TRUE (Smith gets the job and has 10 coins)
+        - Smith has JUSTIFICATION (good evidence about Jones)
+        - But intuitively, Smith doesn't KNOW this fact
         
-        ## Philosophical Arguments
+        **Case II: The Sheep in the Field**
         
-        An **argument** consists of:
-        - **Premises**: Statements that provide evidence or reasons
-        - **Conclusion**: The statement the premises are meant to support
+        Smith believes "Jones owns a Ford" based on strong evidence:
+        - Jones has always owned a Ford
+        - Jones just offered Smith a ride in a Ford
+        - Jones says he owns a Ford
         
-        **Standard Form Example:**
-        ```
-        Premise 1: All humans are mortal
-        Premise 2: Socrates is human
-        Therefore: Socrates is mortal
-        ```
+        Smith randomly selects these propositions:
+        - Either Jones owns a Ford, or Brown is in Boston
+        - Either Jones owns a Ford, or Brown is in Barcelona
         
-        ## Evaluating Arguments
+        **The twist**: Jones doesn't actually own a Ford (he's been driving a rental), but Brown happens to be in Barcelona.
         
-        **Valid arguments**: The conclusion follows logically from the premises
+        **Analysis**:
+        - Smith believes "Either Jones owns a Ford, or Brown is in Barcelona"
+        - This belief is TRUE (Brown is in Barcelona)
+        - Smith has JUSTIFICATION (evidence about Jones owning a Ford)
+        - But Smith doesn't really KNOW this disjunction
         
-        **Sound arguments**: Valid arguments with true premises
+        ## The Pattern in Gettier Cases
         
-        **Common errors to avoid:**
-        - Ad hominem attacks (attacking the person, not the argument)
-        - Circular reasoning (using the conclusion to support itself)
-        - False dichotomy (presenting only two options when more exist)
+        **Common Structure**:
+        1. The believer has strong evidence for a false proposition
+        2. From this false proposition, they infer something else
+        3. By coincidence, what they infer happens to be true
+        4. Their justification is "gettiered" - disconnected from what makes their belief true
+        
+        **Key Insight**: The justification doesn't properly connect to the truth. There's an element of luck or accident that makes the belief true despite the flawed reasoning.
+        
+        ## More Gettier Cases
+        
+        **The Fake Barn Case** (Alvin Goldman):
+        Henry is driving through the countryside and sees what appears to be a barn. He forms the belief "That's a barn." Unknown to Henry, he's in an area full of fake barn facades that look exactly like real barns from the road. However, the particular structure he's looking at happens to be the one real barn in the area.
+        
+        - Belief: "That's a barn" ✓
+        - Truth: It is indeed a barn ✓
+        - Justification: Normal visual experience ✓
+        - Knowledge: Intuitively no - it's just luck he picked the real barn
+        
+        **The Stopped Clock Case**:
+        You look at a clock that shows 3:00 PM and form the belief "It's 3:00 PM." The clock stopped exactly 24 hours ago, so it happens to show the correct time, but you have no way of knowing it's stopped.
+        
+        - Belief: "It's 3:00 PM" ✓
+        - Truth: It is 3:00 PM ✓
+        - Justification: Clock-reading is normally reliable ✓
+        - Knowledge: No - it's accidental that the belief is true
+        
+        ## Responses to Gettier
+        
+        **1. The "No False Premises" Response**
+        
+        **Idea**: Add a fourth condition - the justification must not depend on any false beliefs.
+        
+        **Problem**: This seems too strong. Much of our knowledge seems to depend on beliefs that are technically false or at least imprecise.
+        - "The Earth is round" (it's actually oblate)
+        - "Water is H2O" (ignores isotopes and impurities)
+        - Historical "knowledge" based on sources that contain some errors
+        
+        **2. Reliabilism**
+        
+        **Idea**: Focus on reliable belief-forming processes rather than justification accessible to the believer.
+        
+        **Alvin Goldman's version**: A belief is knowledge if it's true and produced by a reliable cognitive process.
+        
+        **Advantages**:
+        - Handles Gettier cases (the processes in Gettier cases aren't fully reliable)
+        - Explains animal and child knowledge
+        - Connects to cognitive science
+        
+        **Problems**:
+        - The generality problem: How specific should we be about the process?
+        - Clairvoyance cases: What if someone has reliable but unjustified beliefs?
+        - Cultural and social dimensions of knowledge
+        
+        **3. Causal Theories**
+        
+        **Idea**: Knowledge requires an appropriate causal connection between the fact and the belief.
+        
+        **Alvin Goldman's early version**: S knows that P if and only if the fact that P is causally connected in an appropriate way with S's believing P.
+        
+        **Advantages**:
+        - Explains why Gettier cases fail (wrong causal chain)
+        - Handles perceptual and memory knowledge well
+        
+        **Problems**:
+        - What about mathematical and logical knowledge? (No clear causal connection)
+        - General facts and laws (how are they causally connected to beliefs?)
+        - Testimony (complex causal chains)
+        
+        **4. Defeasibility Theories**
+        
+        **Idea**: Knowledge is justified true belief that isn't defeated by any true proposition.
+        
+        **Lehrer and Paxson**: S knows P if S believes P, P is true, S is justified in believing P, and there is no true proposition that would defeat S's justification if S were justified in believing it.
+        
+        **Application to Gettier**: In Gettier cases, there are true propositions (like "Jones won't get the job") that would defeat the justification if known.
+        
+        **Problems**:
+        - Misleading defeaters: What if true information would misleadingly defeat good justification?
+        - The problem of specifying exactly what defeats what
+        
+        **5. Virtue Epistemology**
+        
+        **Idea**: Knowledge involves intellectual virtues or excellences.
+        
+        **Ernest Sosa**: Knowledge is true belief that manifests intellectual virtue.
+        
+        **Advantages**:
+        - Connects epistemology to ethics
+        - Emphasizes the quality of the believer's cognitive character
+        - Can handle Gettier cases (they don't manifest virtue)
+        
+        **Problems**:
+        - What exactly are intellectual virtues?
+        - Can vicious people have knowledge?
+        - Cultural relativity of virtues
+        
+        **6. Safety and Sensitivity Conditions**
+        
+        **Safety** (Ernest Sosa): S's belief that P is safe if S wouldn't easily have been wrong about P.
+        
+        **Sensitivity** (Robert Nozick): S's belief that P is sensitive if S wouldn't believe P if P were false.
+        
+        **Application**: Gettier cases typically involve beliefs that are unsafe (the person could easily have been wrong) or insensitive (they would have believed the same thing even if it were false).
+        
+        ## Contemporary Developments
+        
+        **Knowledge First Epistemology** (Timothy Williamson):
+        - Knowledge is a primitive, unanalyzable mental state
+        - Don't try to define knowledge in terms of belief, truth, and justification
+        - Instead, use knowledge to understand these other concepts
+        
+        **Pragmatic Encroachment**:
+        - Whether someone knows something depends partly on practical factors
+        - Higher stakes require stronger evidence for knowledge
+        - Challenges the traditional view that knowledge is purely epistemic
+        
+        **Experimental Philosophy**:
+        - Use empirical methods to study intuitions about knowledge
+        - Cross-cultural studies of epistemological concepts
+        - Questions whether philosophers' intuitions are universal
+        
+        ## The Lasting Impact
+        
+        **What Gettier Showed**:
+        - The classical JTB analysis is insufficient
+        - Luck and accident can undermine knowledge even when all traditional conditions are met
+        - The connection between justification and truth matters
+        
+        **What Gettier Didn't Show**:
+        - That knowledge is impossible
+        - That the three conditions aren't necessary
+        - That we should abandon the project of analyzing knowledge
+        
+        **Current State**:
+        - No consensus on the correct analysis of knowledge
+        - Ongoing debate about whether knowledge can be analyzed at all
+        - Rich variety of approaches and insights
+        - Deeper understanding of the complexity of knowledge
         """)
         
-        with st.expander("💡 Practice Exercise"):
+        with st.expander("💡 Create Your Own Gettier Case"):
             st.markdown("""
-            **Identify the premises and conclusion:**
+            **Challenge**: Design a scenario where someone has justified true belief but not knowledge.
             
-            "Since philosophy examines fundamental assumptions, and other disciplines take these assumptions for granted, philosophy must be different from other academic fields."
+            **Template**:
+            1. Set up a situation where someone has good evidence for belief X
+            2. Make belief X false (unknown to the believer)
+            3. Through coincidence, make the believer's conclusion true anyway
+            4. The result: justified true belief without knowledge
             
-            **Answer:**
-            - Premise 1: Philosophy examines fundamental assumptions
-            - Premise 2: Other disciplines take these assumptions for granted  
-            - Conclusion: Philosophy is different from other academic fields
+            **Example**: 
+            - You believe your friend is at the coffee shop because you saw their car outside
+            - Actually, they lent their car to someone else and aren't there
+            - But they happened to walk to the coffee shop and are there anyway
+            - You have justified true belief that they're at the coffee shop, but not knowledge
             """)
     
-    elif module == "Module 3: Epistemology - Theory of Knowledge":
-        st.subheader("Epistemology: The Theory of Knowledge")
+    elif module == "Module 7: Skepticism and the Limits of Knowledge":
+        st.subheader("Skepticism and the Limits of Knowledge")
         
         st.markdown("""
-        ## What is Epistemology?
+        ## What is Skepticism?
         
-        **Epistemology** is the branch of philosophy that investigates the nature, sources, and limits of human knowledge. It asks fundamental questions about what we can know and how we can know it.
+        **Skepticism** in philosophy is the view that questions whether knowledge is possible. Rather than denying that we have beliefs or that some beliefs are better than others, skepticism challenges whether any of our beliefs constitute genuine knowledge.
         
-        ## Central Epistemological Questions
+        **Types of Skepticism**:
         
-        1. **What is knowledge?** How does knowledge differ from mere opinion or belief?
-        2. **What are the sources of knowledge?** Do we learn through experience, reason, or both?
-        3. **What are the limits of knowledge?** Are there things we cannot know?
-        4. **How do we justify our beliefs?** What makes a belief reasonable to hold?
+        **Global Skepticism**: We cannot know anything at all
+        **Local Skepticism**: We cannot know things in specific domains (external world, other minds, the future, morality, etc.)
+        **Methodological Skepticism**: Using doubt as a tool to find certain knowledge (Descartes)
+        **Pyrrhonian Skepticism**: Suspending judgment on all matters to achieve peace of mind
         
-        ## Classical Definition of Knowledge
+        ## Classical Skeptical Arguments
         
-        **Knowledge = Justified True Belief**
+        **The Problem of the Criterion** (Sextus Empiricus):
         
-        For something to count as knowledge, it must be:
-        - **Believed** (you must accept it as true)
-        - **True** (it must actually be the case)
-        - **Justified** (you must have good reasons for believing it)
+        To know something, we need criteria for truth. But to establish criteria for truth, we need to know what truth is. This creates a circle:
+        - To know, we need criteria
+        - To have criteria, we need knowledge
+        - Therefore, neither knowledge nor criteria are possible
         
-        ## Sources of Knowledge
+        **The Regress Problem**:
         
-        **Rationalism**: Emphasizes reason and logic as primary sources
-        - Knowledge comes through thinking and logical analysis
-        - Mathematical truths are paradigm examples
-        - Associated with philosophers like Plato and Descartes
+        Any belief needs justification. But what justifies the justifying belief? This leads to:
+        1. **Infinite regress**: Each belief needs another belief to justify it, ad infinitum
+        2. **Circular reasoning**: Eventually beliefs justify each other in a circle
+        3. **Foundationalism**: Some beliefs are basic and need no justification (but how do we know which ones?)
         
-        **Empiricism**: Emphasizes sensory experience as primary source
-        - Knowledge comes through observation and experiment
-        - Scientific knowledge is the paradigm
-        - Associated with philosophers like Aristotle and Hume
+        ## Modern Skeptical Scenarios
         
-        ## Types of Knowledge
+        **Cartesian Doubt** (René Descartes):
         
-        **A Priori Knowledge**: Known independently of experience
-        - Mathematical truths (2+2=4)
-        - Logical principles (law of non-contradiction)
+        **The Evil Demon**: What if a powerful evil demon is deceiving you about everything? Your senses, your memories, even your mathematical beliefs could all be false. How could you tell the difference between reality and perfect deception?
         
-        **A Posteriori Knowledge**: Known through experience
-        - Scientific facts about the world
-        - Historical events
+        **Contemporary Versions**:
+        - **Brain in a Vat**: What if you're just a brain in a vat being stimulated to have experiences of a world that doesn't exist?
+        - **The Matrix**: What if you're plugged into a computer simulation like in the movie?
+        - **Simulated Reality**: What if advanced beings are running a simulation of reality that includes you?
         
-        ## Skeptical Challenges
+        **The Problem of the External World**:
         
-        **Skepticism** questions whether knowledge is possible:
-        - How do we know our senses are reliable?
-        - Could we be systematically deceived about reality?
-        - What if our reasoning abilities are flawed?
+        All you directly experience are your own mental states - sensations, perceptions, thoughts. How do you know these correspond to an external world? Maybe there are only minds and ideas, no material objects.
         
-        ## The Problem of the Criterion
+        **David Hume's Skepticism**:
         
-        To know something, we need criteria for truth. But to establish criteria for truth, we need to know what truth is. This creates a circular problem that epistemologists must address.
+        **Problem of Induction**: We cannot justify our belief that the future will resemble the past. Every inference from past experience to future expectations involves an unjustifiable leap.
+        
+        **Causation**: We never actually observe causal connections, only sequences of events. Our belief in causation is just psychological habit, not knowledge.
+        
+        **Personal Identity**: What makes you the same person over time? Your body changes, your mind changes, your memories are unreliable. There may be no enduring self.
+        
+        ## Arguments Against Skepticism
+        
+        **Moore's Common Sense Response**:
+        
+        G.E. Moore argued that we know common sense facts with greater certainty than any skeptical argument:
+        - "Here is one hand, and here is another"
+        - "I know this is a hand with greater certainty than I know any skeptical premise"
+        - Therefore, skeptical arguments must have false premises
+        
+        **Problems with Moore's approach**:
+        - Seems to miss the point of skeptical arguments
+        - Doesn't explain how we know common sense facts
+        - Vulnerable to the charge of begging the question
+        
+        **Transcendental Arguments**:
+        
+        **Strategy**: Show that skeptical scenarios are self-refuting or meaningless.
+        
+        **Example** (Kant): Experience requires categories like causation and substance. Therefore, we must be able to apply these categories to experience, which means we can have knowledge about the structure of experience.
+        
+        **Semantic Arguments** (Hilary Putnam):
+        
+        **Brain in a Vat argument**: If you were a brain in a vat, your words "brain" and "vat" would refer to simulated brains and vats, not real ones. So when you say "I am a brain in a vat," you're necessarily saying something false. Therefore, you're not a brain in a vat.
+        
+        **Problems**: Relies on controversial theories of meaning and reference.
+        
+        **Contextualist Responses**:
+        
+        **David Lewis, Keith DeRose**: Whether we "know" something depends on context. In ordinary contexts, we do have knowledge. Skeptical scenarios create artificially high standards that don't apply to normal life.
+        
+        **Relevant Alternatives Theory** (Fred Dretske):
+        
+        We only need to rule out relevant alternatives, not all logical possibilities. In normal contexts, brain-in-vat scenarios aren't relevant alternatives to consider.
+        
+        ## The Value and Function of Skepticism
+        
+        **Positive Roles of Skeptical Arguments**:
+        
+        **Philosophical Therapy**: Skepticism can cure us of dogmatism and overconfidence
+        **Methodological Tool**: Doubt can help us find more secure foundations for knowledge
+        **Clarification**: Skeptical challenges force us to be clearer about what we mean by "knowledge"
+        **Humility**: Recognizing the limits of human knowledge can be wisdom
+        
+        **Practical Problems with Skepticism**:
+        
+        **Livability**: Can we actually live as skeptics? Don't we have to act on beliefs?
+        **Self-refutation**: Does arguing for skepticism presuppose that we can know the skeptical arguments are sound?
+        **Selectivity**: Skeptics seem to accept some forms of reasoning (logic, argument) while rejecting others
+        
+        ## Contemporary Developments
+        
+        **Epistemic Contextualism**:
+        - Knowledge attributions are context-sensitive
+        - "Knows" works like words such as "tall" or "rich"
+        - Different contexts create different standards for knowledge
+        
+        **Epistemic Relativism**:
+        - Knowledge claims are relative to communities, cultures, or frameworks
+        - No absolute or universal standards for knowledge
+        - What counts as knowledge varies across groups
+        
+        **Naturalized Epistemology**:
+        - Focus on how we actually acquire beliefs rather than skeptical worries
+        - Use psychology and cognitive science to understand knowledge
+        - Abandon the traditional project of refuting skepticism
+        
+        **Pragmatist Approaches**:
+        - Judge beliefs by their practical consequences rather than their correspondence to reality
+        - Knowledge is what works for achieving our goals
+        - Skeptical scenarios are irrelevant if they don't affect action
+        
+        ## Living with Uncertainty
+        
+        **Practical Rationality**: Even if we can't achieve certainty, we can still make reasonable decisions based on evidence and probability.
+        
+        **Degrees of Confidence**: Instead of claiming absolute knowledge, we can express varying degrees of confidence in our beliefs.
+        
+        **Fallibilism**: Accept that our beliefs might be wrong while still taking them seriously enough to act on.
+        
+        **Intellectual Humility**: Recognize the limits of human knowledge while continuing to seek truth and understanding.
         """)
         
-        with st.expander("💡 Thought Experiment"):
+        with st.expander("💡 Skeptical Challenge Exercise"):
             st.markdown("""
-            **The Gettier Problem:**
+            **The Skeptical Challenge**:
             
-            Smith believes Jones will get the job and Jones has 10 coins in his pocket. So Smith believes "The person who gets the job has 10 coins." 
+            Pick something you're confident you know (e.g., "I'm currently reading text on a screen").
             
-            Unknown to Smith, he actually gets the job himself, and he also happens to have 10 coins in his pocket.
+            **Step 1**: Consider skeptical alternatives
+            - Could you be dreaming this?
+            - Could you be in a simulation?
+            - Could an evil demon be deceiving you?
             
-            Smith's belief is true and justified, but is it knowledge? This challenge led philosophers to reconsider the classical definition of knowledge.
+            **Step 2**: Try to rule out these alternatives
+            - What evidence could you give that you're not dreaming?
+            - How could you prove you're not in a simulation?
+            - Can you be certain there's no deception?
+            
+            **Step 3**: Reflect on the exercise
+            - Does this undermine your original knowledge claim?
+            - Are these skeptical scenarios relevant to practical life?
+            - What does this tell us about the nature of knowledge and certainty?
+            
+            **Consider**: Maybe the goal isn't to achieve absolute certainty, but to have beliefs that are reasonable, well-supported, and useful for navigating life.
             """)
     
-    elif module == "Module 4: Pre-Socratic Philosophers":
-        st.subheader("The Pre-Socratic Revolution")
+    elif module == "Module 8: Foundationalism vs. Coherentism":
+        st.subheader("Foundationalism vs. Coherentism")
         
         st.markdown("""
-        ## The Philosophical Revolution
+        ## The Structure of Justification
         
-        The **Pre-Socratic philosophers** (6th-5th centuries BCE) began the first systematic attempt to understand the natural world through reason rather than mythology. This marked the birth of both philosophy and science.
+        One of the central questions in epistemology is: **How is knowledge structured?** When we trace back our justifications for belief, what do we find? This leads to a fundamental debate about the architecture of human knowledge.
         
-        ## Thales (c. 624-546 BCE)
+        ## The Regress Problem
         
-        **Revolutionary Insight**: Natural phenomena have natural explanations
+        Consider any belief you hold - say, "It will rain tomorrow." If someone asks why you believe this, you might cite evidence: "The weather forecast says so." But why trust the weather forecast? "Because meteorologists use scientific methods." Why trust scientific methods? "Because they've been reliable in the past." But why think past reliability indicates future reliability?
         
-        **Key Ideas:**
-        - Water is the fundamental substance from which all things arise
-        - Earthquakes are caused by water movements, not angry gods
-        - Natural events can be predicted through observation and reasoning
+        This questioning can continue indefinitely, leading to what philosophers call **the epistemic regress problem**:
         
-        **Historical Significance**: First to seek rational rather than supernatural explanations
+        1. **Infinite Regress**: Each belief needs justification from another belief, ad infinitum
+        2. **Circular Reasoning**: Eventually our beliefs justify each other in a circle  
+        3. **Arbitrary Stopping Point**: We just declare some beliefs justified without reason
+        4. **Foundationalism**: Some beliefs are basic and need no further justification
+        5. **Coherentism**: Beliefs are justified by their place in a coherent system
         
-        ## Heraclitus (c. 535-475 BCE)
+        ## Foundationalism: The Quest for Bedrock
         
-        **Central Doctrine**: "Everything flows" - reality is constant change
+        **Core Idea**: Knowledge has a foundation-like structure. Some beliefs are **basic** (self-justifying or requiring no justification from other beliefs), while others are **non-basic** (justified by basic beliefs).
         
-        **Famous Sayings:**
-        - "You cannot step into the same river twice"
-        - "The way up and down are one and the same"
-        - "Opposition is necessary for harmony"
+        ### Classical Foundationalism
         
-        **Key Insight**: Apparent stability emerges from underlying change and conflict
+        **Requirements for Basic Beliefs**:
+        - **Infallible**: Cannot be false
+        - **Indubitable**: Cannot be rationally doubted  
+        - **Self-evident**: Their truth is obvious upon understanding them
         
-        ## Parmenides (c. 515-450 BCE)
+        **Examples of Allegedly Basic Beliefs**:
+        - **Immediate experience**: "I am having a red sensation now"
+        - **Mathematical truths**: "2 + 2 = 4"
+        - **Logical principles**: "Nothing can be both A and not-A"
+        - **Simple conceptual truths**: "All bachelors are unmarried"
         
-        **Radical Claim**: Change is an illusion - reality is eternal and unchanging
+        **René Descartes' Foundation**:
+        - Used methodological skepticism to find indubitable foundation
+        - "Cogito ergo sum" (I think, therefore I am) as the basic belief
+        - Clear and distinct ideas as the criterion for truth
+        - Built knowledge from this certain foundation
         
-        **The Way of Truth**:
-        - What exists must be eternal, indivisible, and unchanging
-        - Coming-to-be and passing-away are impossible
-        - Sensory experience deceives us about reality's true nature
+        **Problems with Classical Foundationalism**:
         
-        **Method**: Pure logical reasoning reveals truth about reality
+        **The Given Myth** (Wilfrid Sellars): The idea that some experiences are "given" to us without conceptual interpretation is problematic. All conscious experience seems to involve concepts and interpretation.
         
-        ## Zeno of Elea (c. 490-430 BCE)
+        **Too Few Basic Beliefs**: If basic beliefs must be infallible, there are very few of them. Most of what we consider knowledge seems fallible.
         
-        **Purpose**: Defend Parmenides by showing the absurdity of motion and change
+        **The Inference Problem**: How do we get from basic beliefs about our mental states to knowledge about the external world? The gap seems unbridgeable.
         
-        **Famous Paradoxes:**
+        ### Modest Foundationalism
         
-        **Achilles and the Tortoise**: Achilles can never catch a tortoise with a head start because he must always first reach where the tortoise was, by which time it has moved further ahead.
+        **Relaxed Requirements**: Basic beliefs need not be infallible, just:
+        - **Prima facie justified**: Justified unless there's defeating evidence
+        - **Reliable**: Produced by generally trustworthy processes
+        - **Properly basic**: Justified in certain circumstances without inference
         
-        **The Arrow**: At any instant, a moving arrow occupies a space equal to itself and is therefore at rest. If it's at rest at every instant, how can it move?
+        **Examples**:
+        - **Perceptual beliefs**: "I see a red apple" (basic in normal conditions)
+        - **Memory beliefs**: "I had breakfast this morning" (basic when memory is functioning)
+        - **Introspective beliefs**: "I feel sad" (basic about one's own mental states)
         
-        **Historical Impact**: These paradoxes forced philosophers to think more carefully about space, time, and infinity.
+        **Alvin Plantinga's Reformed Epistemology**:
+        - Belief in God can be properly basic in certain circumstances
+        - We have a sensus divinitatis that produces basic religious beliefs
+        - These beliefs are warranted if produced by faculties aimed at truth
         
-        ## The Fundamental Debate
+        ## Coherentism: The Web of Belief
         
-        **Heraclitus vs. Parmenides** represents a fundamental tension in philosophy:
-        - Should we trust sensory experience (Heraclitus) or pure reason (Parmenides)?
-        - Is reality fundamentally about change or permanence?
-        - How do we reconcile the apparent conflict between experience and logic?
+        **Core Idea**: Beliefs are justified not by being basic, but by fitting coherently into a system of beliefs. Justification is holistic - it depends on how well beliefs work together.
         
-        This debate continues to influence philosophy, science, and mathematics today.
+        **W.V.O. Quine's Web of Belief**:
+        - Our beliefs form a "web" where each belief is connected to others
+        - Beliefs at the center (logic, mathematics) are more difficult to revise
+        - Beliefs at the periphery (observational reports) are more easily changed
+        - When experience conflicts with our beliefs, we can revise any part of the web
+        
+        **Keith Lehrer's Coherentism**:
+        - A belief is justified if it coheres with the believer's acceptance system
+        - The acceptance system includes beliefs, preferences, and principles
+        - Coherence involves consistency, explanatory connections, and probabilities
+        
+        ### What Makes a System Coherent?
+        
+        **Consistency**: The beliefs in the system don't contradict each other
+        
+        **Comprehensiveness**: The system covers a wide range of the believer's experience
+        
+        **Explanatory Relations**: Beliefs explain and are explained by other beliefs in the system
+        
+        **Probabilistic Support**: Beliefs make other beliefs in the system more likely to be true
+        
+        **Simplicity**: Other things being equal, simpler systems are more coherent
+        
+        **Conservatism**: Systems that preserve more of our existing beliefs are preferred
+        
+        ### Advantages of Coherentism
+        
+        **Avoids Regress**: No need for basic beliefs that stop the regress arbitrarily
+        
+        **Holistic**: Matches how justification actually seems to work in science and everyday life
+        
+        **Democratic**: All beliefs can potentially serve as justifiers for others
+        
+        **Flexible**: Can accommodate new evidence by adjusting the entire system
+        
+        ### Problems with Coherentism
+        
+        **The Isolation Problem**: A coherent system might be completely cut off from reality. Coherent delusions are possible.
+        
+        **Alternative Systems Problem**: Multiple incompatible systems might be equally coherent. How do we choose between them?
+        
+        **Input Problem**: How does new experience get into the system if there are no basic experiential beliefs?
+        
+        **Circularity**: Coherentism seems to involve circular justification, which foundationalists reject.
+        
+        ## Hybrid Approaches
+        
+        ### Foundherentism (Susan Haack)
+        
+        **Combination**: Justification is partly foundational (some beliefs have independent warrant) and partly coherential (beliefs support each other).
+        
+        **Metaphor**: Knowledge is like a crossword puzzle - some clues (basic beliefs) provide independent reasons, but the answers must also fit together coherently.
+        
+        ### Contextualism
+        
+        **Context-Sensitivity**: What counts as basic or needs coherence depends on the epistemic context and the standards in play.
+        
+        **Different Domains**: Scientific knowledge might require coherence, while everyday perceptual knowledge might rely on foundations.
+        
+        ## Reliabilism and the Structure Debate
+        
+        **Process Reliabilism**: Focus on reliable belief-forming processes rather than the structure of justification.
+        
+        **Virtue Epistemology**: Emphasize intellectual virtues and proper cognitive functioning rather than foundational structure.
+        
+        **These approaches**: Suggest the foundation/coherence debate might be asking the wrong question by focusing too much on justification rather than reliable knowledge production.
+        
+        ## Implications for Practice
+        
+        **Scientific Method**:
+        - **Foundationalist elements**: Observation reports as basic evidence
+        - **Coherentist elements**: Theories must fit together with existing knowledge
+        - **Hybrid reality**: Science uses both foundations and coherence
+        
+        **Legal Reasoning**:
+        - **Basic evidence**: Eyewitness testimony, physical evidence
+        - **Coherent case**: Evidence must tell a coherent story
+        - **Standards vary**: Different standards for different types of cases
+        
+        **Everyday Knowledge**:
+        - **Perceptual foundations**: We treat many sensory experiences as basic
+        - **Coherence checking**: We reject beliefs that don't fit with what we know
+        - **Pragmatic flexibility**: We adjust our standards based on practical needs
         """)
         
-        with st.expander("💡 Critical Analysis"):
+        with st.expander("💡 Structure Analysis Exercise"):
             st.markdown("""
-            **Consider these questions:**
+            **Analyze Your Belief Structure**:
             
-            1. **Thales's Method**: Was Thales right to seek natural explanations? What are the advantages and limitations of this approach?
+            Pick a complex belief you hold (e.g., "Climate change is primarily caused by human activity").
             
-            2. **Heraclitus vs. Parmenides**: Who do you think was closer to the truth? Can their views be reconciled?
+            **Foundationalist Analysis**:
+            1. What basic evidence supports this belief?
+            2. How does this evidence connect to your conclusion?
+            3. Are there any beliefs you consider basic/foundational?
             
-            3. **Zeno's Paradoxes**: How might we resolve the paradox of Achilles and the tortoise? What does this tell us about the relationship between mathematics and reality?
+            **Coherentist Analysis**:
+            1. How does this belief fit with your other beliefs?
+            2. What other beliefs support this one?
+            3. Would rejecting this belief require changing other beliefs?
+            
+            **Reflection**:
+            - Which analysis better captures how you actually hold this belief?
+            - Do you use both foundational evidence and coherence reasoning?
+            - What happens when foundational evidence conflicts with system coherence?
             """)
     
-    elif module == "Module 5: Knowledge vs. Opinion":
-        st.subheader("Distinguishing Knowledge from Opinion")
+    elif module == "Module 9: Theoretical vs. Anarchic Thinking":
+        st.subheader("Theoretical vs. Anarchic Thinking")
         
         st.markdown("""
-        ## The Fundamental Distinction
+        ## Stenstad's Distinction
         
-        One of philosophy's most important tasks is distinguishing between what we actually **know** and what we merely **believe** or **think we know**.
+        In our course readings, philosopher Gail Stenstad makes an important distinction between two approaches to knowledge and truth. This distinction has significant implications for how we understand the nature of reality and our relationship to truth.
         
-        ## Characteristics of Knowledge
+        ## Theoretical Thinking
         
-        **Knowledge requires:**
-        1. **Truth**: The belief must correspond to reality
-        2. **Belief**: You must accept it as true
-        3. **Justification**: You must have good reasons for believing it
-        4. **Reliability**: The method of acquiring it must be dependable
+        **Core Characteristics**:
         
-        ## Characteristics of Opinion
+        **Exclusivity**: If one view about reality is "correct," then any "different" view has to be "incorrect."
         
-        **Opinion typically involves:**
-        - Personal preference or judgment
-        - Cultural or social influence
-        - Limited evidence or justification
-        - Subjective rather than objective criteria
+        **Unity of Truth**: There is one correct view about what the world is like.
         
-        ## The Spectrum of Certainty
+        **Hierarchical Structure**: Views can be ranked as better or worse, more or less accurate.
         
-        **Absolute Certainty**: Mathematical and logical truths (2+2=4)
+        **Objective Standards**: There are universal criteria for determining truth that apply regardless of perspective or context.
         
-        **High Probability**: Well-established scientific facts
+        **Examples of Theoretical Approach**:
+        - **Scientific Realism**: Science aims to discover the one true description of reality
+        - **Mathematical Platonism**: Mathematical truths are objective and universal
+        - **Moral Objectivism**: There are correct moral facts independent of what people believe
+        - **Religious Fundamentalism**: One faith tradition has the complete truth about divine reality
         
-        **Reasonable Belief**: Conclusions based on good evidence
+        **Strengths of Theoretical Thinking**:
+        - Provides clear standards for evaluation
+        - Motivates rigorous inquiry and criticism
+        - Allows for genuine disagreement and debate
+        - Supports the idea of progress in knowledge
+        - Maintains that some views are genuinely better than others
         
-        **Opinion**: Judgments based on limited information
+        **Problems with Theoretical Thinking**:
+        - May be intolerant of alternative perspectives
+        - Could miss valuable insights from different viewpoints
+        - Might impose artificial unity on a diverse reality
+        - Can lead to dogmatism and closed-mindedness
+        - May not acknowledge the role of perspective in knowledge
         
-        **Speculation**: Guesses with little supporting evidence
+        ## Anarchic Thinking
         
-        ## Sources of Error
+        **Core Characteristics**:
         
-        **Why we might mistake opinion for knowledge:**
+        **Pluralism**: Multiple "very different" perspectives can be valid simultaneously.
         
-        1. **Confirmation Bias**: Seeking information that confirms our existing beliefs
-        2. **Authority Bias**: Accepting claims because of who made them
-        3. **Cultural Assumptions**: Mistaking local customs for universal truths
-        4. **Emotional Attachment**: Wanting something to be true
+        **Non-exclusivity**: Different views are "not ruled out" even if they seem to conflict.
         
-        ## Tests for Knowledge Claims
+        **Contextual Truth**: Truth may be relative to perspective, culture, or framework.
         
-        **Ask yourself:**
-        - What evidence supports this claim?
-        - Could this be explained differently?
-        - What would count as evidence against it?
-        - Are my sources reliable and unbiased?
-        - Am I being influenced by emotion or desire?
+        **Horizontal Structure**: Views are different rather than better or worse.
         
-        ## The Socratic Method
+        **Examples of Anarchic Approach**:
+        - **Cultural Relativism**: Different cultures have different valid ways of understanding reality
+        - **Perspectivism**: Reality looks different from different viewpoints, and multiple perspectives are needed
+        - **Postmodern Pluralism**: Grand narratives should be replaced by local, diverse understandings
+        - **Religious Pluralism**: Different faith traditions offer complementary insights into divine reality
         
-        **Socrates' approach to testing knowledge:**
-        1. Ask probing questions about basic assumptions
-        2. Reveal contradictions in our beliefs
-        3. Admit ignorance when evidence is insufficient
-        4. Continue searching for better understanding
+        **Strengths of Anarchic Thinking**:
+        - Embraces diversity and different perspectives
+        - Avoids dogmatism and intolerance
+        - Recognizes the limitations of any single viewpoint
+        - Can incorporate insights from multiple traditions
+        - Acknowledges the role of context in shaping understanding
         
-        ## Practical Applications
+        **Problems with Anarchic Thinking**:
+        - May lead to relativism where "anything goes"
+        - Could undermine the possibility of genuine disagreement
+        - Might prevent us from making necessary judgments
+        - Can be paralyzed by too many equally valid options
+        - May not adequately distinguish better from worse views
         
-        **In daily life, distinguish between:**
-        - Facts that can be verified vs. personal preferences
-        - Expert consensus vs. popular opinion  
-        - Evidence-based conclusions vs. wishful thinking
-        - Logical reasoning vs. emotional reactions
+        ## Interpretive Challenges
+        
+        **The Ambiguity Problem**: As noted in our readings, Stenstad's claims about anarchic thinking are somewhat ambiguous. When she says different views are "not ruled out," what exactly does this mean?
+        
+        **Possible Interpretations**:
+        
+        **1. Logical Compatibility**: Views that don't logically contradict each other can both be true.
+        - Example: "God is loving" and "God is just" can both be true
+        - This seems reasonable but doesn't capture the radical nature of anarchic thinking
+        
+        **2. Contradictory Coexistence**: Even contradictory views can both be "true" in some sense.
+        - Example: "God exists" and "God does not exist" are both acceptable
+        - This seems to violate the law of non-contradiction
+        
+        **3. Framework Relativity**: Contradictory views are true relative to different frameworks.
+        - Example: "God exists" is true within religious frameworks, false within naturalistic ones
+        - This preserves logic but makes truth relative
+        
+        **4. Complementary Perspectives**: Different views capture different aspects of a complex reality.
+        - Example: Wave and particle descriptions of light are both needed
+        - This suggests reality is too complex for any single description
+        
+        ## Applications and Examples
+        
+        **In Science**:
+        
+        **Theoretical Approach**: Science aims to discover the one true theory that explains all phenomena. Competing theories are evaluated to determine which is correct.
+        
+        **Anarchic Approach**: Different scientific approaches (reductionist vs. holistic, quantitative vs. qualitative) offer complementary insights. No single method captures all of reality.
+        
+        **In Religion**:
+        
+        **Theoretical Approach**: One religion has the complete truth; other religions are false or incomplete.
+        
+        **Anarchic Approach**: Different religious traditions offer valid insights into spiritual reality. Multiple paths can lead to truth.
+        
+        **In Ethics**:
+        
+        **Theoretical Approach**: There are objective moral truths that apply universally. Moral disagreement reflects ignorance or error.    elif module == "Module 5: The Classical Definition of Knowledge (JTB)":
+        st.subheader("The Classical Definition of Knowledge")
+        
+        st.markdown("""
+        ## The Tripartite Analysis of Knowledge
+        
+        For over two millennia, philosophers largely agreed on what knowledge is. The **classical definition** states that knowledge is **Justified True Belief** (JTB). This seems intuitive - to know something, you must believe it, it must be true, and you must have good reasons for believing it.
+        
+        ## The Three Conditions
+        
+        **1. Belief Condition**
+        
+        You cannot know something you don't believe. This seems obvious:
+        - If someone asks "Do you know what time it is?" and you respond "It's 3:00 PM, but I don't believe that's correct," we'd say you don't really know the time
+        - Knowledge requires a mental commitment to the truth of the proposition
+        - The belief can be implicit (shown through behavior) or explicit (consciously held)
+        
+        **Complications:**
+        - **Degrees of belief**: Do you need complete confidence or just enough to act?
+        - **Unconscious knowledge**: Can you know things you're not consciously aware of believing?
+        - **Knowledge without belief**: Some argue you can know things you're reluctant to believe (like your own mortality)
+        
+        **2. Truth Condition**
+        
+        You cannot know falsehoods. This is non-negotiable:
+        - "I know the Earth is flat" is impossible if the Earth is round
+        - Knowledge is **factive**: If you know P, then P must be true
+        - This distinguishes knowledge from mere belief, which can be false
+        
+        **Complications:**
+        - **What is truth?**: Correspondence, coherence, or pragmatic theories?
+        - **Changing truth**: If scientific theories change, did we ever have knowledge?
+        - **Vague truths**: For vague statements, when exactly are they true or false?
+        
+        **3. Justification Condition**
+        
+        True belief isn't enough - you need good reasons. Consider these cases:
+        
+        **Lucky Guess**: You believe your lottery ticket will win because you have a "good feeling," and it actually wins. You had a true belief, but not knowledge, because your justification was inadequate.
+        
+        **Superstitious Belief**: You believe there will be an earthquake because you saw a black cat, and coincidentally there is one. True belief, but not knowledge.
+        
+        **What makes justification adequate?**
+        - **Evidential support**: Good reasons that make the belief likely to be true
+        - **Proper grounding**: The justification must be relevant to the truth of the belief
+        - **Non-accidental connection**: The justification must reliably lead to truth
+        
+        ## Types of Justification
+        
+        **Foundationalist Justification**
+        - Some beliefs are **basic** (don't need justification from other beliefs)
+        - Non-basic beliefs are justified by basic ones
+        - Example: "I see a red apple" might be basic; "There are apples in the store" is derived
+        
+        **Coherentist Justification**
+        - Beliefs are justified by fitting coherently with other beliefs
+        - No absolutely basic beliefs - justification is holistic
+        - Like a web of beliefs that support each other
+        
+        **Reliabilist Justification**
+        - Beliefs are justified if they're produced by reliable processes
+        - Focus on the process rather than the person's reasons
+        - Example: Vision is generally reliable, so visual beliefs are usually justified
+        
+        ## Historical Examples and Applications
+        
+        **Plato's Analysis**
+        In the *Theaetetus*, Plato considers whether knowledge is:
+        1. Perception (rejected - perception can be false)
+        2. True belief (rejected - not sufficient)
+        3. True belief with an account/explanation (closest to modern JTB)
+        
+        **Medieval Developments**
+        - Islamic philosophers like Al-Ghazali refined the analysis
+        - Aquinas integrated Aristotelian epistemology with Christian theology
+        - Emphasis on the role of divine illumination in knowledge
+        
+        **Modern Epistemology**
+        - Descartes: Knowledge requires certainty and clear/distinct ideas
+        - Locke: Knowledge comes from sensation and reflection
+        - Hume: Challenged the possibility of certain knowledge beyond impressions
+        
+        ## Problems with the JTB Account
+        
+        **The Generality Problem**
+        - Which level of generality should we specify for justification?
+        - "Belief formed by vision" vs. "belief formed by vision in good light" vs. "belief formed by vision in good light while wearing glasses"
+        
+        **The Problem of Stored Beliefs**
+        - Do we need to be currently aware of our justification?
+        - What about beliefs we formed long ago but can't remember how?
+        
+        **Cultural and Social Dimensions**
+        - Does justification require individual reasons or can social/cultural factors count?
+        - What about testimony and trusting others?
+        
+        ## Testing the JTB Analysis
+        
+        **Case Study 1: Testimonial Knowledge**
+        - You believe Paris is the capital of France because your teacher told you
+        - It's true that Paris is the capital of France
+        - Is testimony from a reliable source adequate justification?
+        - **Analysis**: Seems to meet JTB conditions, and we commonly accept this as knowledge
+        
+        **Case Study 2: Memory Knowledge**
+        - You believe you had breakfast this morning because you remember doing so
+        - You did have breakfast this morning
+        - Is memory a reliable form of justification?
+        - **Analysis**: Memory seems generally reliable, so this appears to be knowledge
+        
+        **Case Study 3: Perceptual Knowledge**
+        - You believe there's a tree in front of you because you see it
+        - There is indeed a tree in front of you
+        - Is visual perception adequate justification?
+        - **Analysis**: In normal conditions, vision seems highly reliable
+        
+        ## The Stability of the JTB Account
+        
+        For centuries, the JTB analysis seemed secure. It captured our intuitions about knowledge and provided a framework for epistemological inquiry. Philosophers debated:
+        - What exactly constitutes adequate justification?
+        - How much justification is enough?
+        - Whether justification must be accessible to the believer
+        
+        But they generally agreed that these three conditions were necessary and sufficient for knowledge.
+        
+        This consensus was shattered in 1963 by a three-page paper that would revolutionize epistemology...
         """)
         
-        with st.expander("💡 Self-Assessment"):
+        with st.expander("💡 Apply the JTB Analysis"):
             st.markdown("""
-            **Evaluate your own beliefs:**
+            **Test these cases against the JTB conditions:**
             
-            Think of something you're confident you "know." Apply these tests:
+            **Case 1**: Maria believes her car is in the parking lot because she parked it there this morning. Her car is indeed in the parking lot.
+            - Belief? ✓ 
+            - Truth? ✓ 
+            - Justification? ✓ (Memory of parking it)
+            - **Conclusion**: Knowledge
             
-            1. **Evidence Test**: What specific evidence supports this belief?
-            2. **Alternative Test**: What other explanations are possible?
-            3. **Source Test**: Where did this belief come from? Is the source reliable?
-            4. **Bias Test**: Might you want this to be true for personal reasons?
+            **Case 2**: John believes his lottery ticket will win because he "feels lucky." By an incredible coincidence, his ticket actually wins.
+            - Belief? ✓
+            - Truth? ✓
+            - Justification? ✗ (Feeling lucky isn't adequate justification)
+            - **Conclusion**: Not knowledge (lucky guess)
             
-            This process helps distinguish genuine knowledge from strongly held opinions.
-            """)
-    
-    elif module == "Module 6: Eastern Philosophy - The Upanishads":
-        st.subheader("Eastern Philosophy: The Upanishads")
-        
-        st.markdown("""
-        ## The Upanishads: Ancient Wisdom Literature
-        
-        The **Upanishads** (800-200 BCE) are ancient Indian philosophical texts that explore the nature of ultimate reality and the self. They represent one of humanity's earliest systematic philosophical investigations.
-        
-        ## Core Philosophical Concepts
-        
-        **Brahman**: The ultimate, unchanging reality underlying all existence
-        - Beyond all qualities and descriptions
-        - The source and ground of everything that exists
-        - Not a personal god, but pure being itself
-        
-        **Atman**: The true self or soul within each individual
-        - Not the body, mind, or personality
-        - The eternal, unchanging essence of consciousness
-        - The witness of all experience
-        
-        ## The Central Teaching: "Tat Tvam Asi"
-        
-        **"That Art Thou" (Tat tvam asi)** - The most famous teaching from the Chandogya Upanishad
-        
-        **Meaning**: Your true self (Atman) is identical with ultimate reality (Brahman)
-        
-        **Implication**: The individual soul and universal consciousness are one and the same
-        
-        ## The Teaching Story
-        
-        A father (Uddalaka) instructs his son (Svetaketu):
-        
-        *"Place this salt in water and return to me in the morning. Where is the salt? It has dissolved, but taste the water - everywhere it is salty. So too, dear son, the eternal essence pervades all existence. That reality is the true Self, and That Art Thou, Svetaketu."*
-        
-        ## Philosophical Implications
-        
-        **Metaphysics**: Reality is fundamentally one, not many
-        - Apparent diversity is illusion (Maya)
-        - Underlying unity connects all existence
-        
-        **Epistemology**: True knowledge is self-knowledge
-        - External learning cannot reveal ultimate truth
-        - Direct insight, not reasoning, leads to wisdom
-        
-        **Ethics**: Recognizing unity dissolves ego and selfishness
-        - If all is one, harming others harms oneself
-        - Compassion flows naturally from understanding
-        
-        ## Comparison with Western Philosophy
-        
-        **Similarities to Western thought:**
-        - Parmenides: Reality is One and unchanging
-        - Plato: Appearances vs. deeper reality
-        - Plotinus: The One as source of all being
-        
-        **Differences from Western thought:**
-        - Emphasizes direct experience over logical argument
-        - Focuses on liberation from suffering, not just understanding
-        - Sees rational thinking as ultimately limited
-        
-        ## The Method of Inquiry
-        
-        **"Neti, neti"** ("Not this, not this")
-        - Systematic negation of everything that is not the Self
-        - By eliminating what you are not, discover what you are
-        - Similar to Socratic method of questioning assumptions
-        
-        ## Contemporary Relevance
-        
-        Modern physicists and philosophers have noted parallels between Upanishadic thought and:
-        - Quantum mechanics (the observer-observed relationship)
-        - Systems theory (interconnectedness of all phenomena)
-        - Consciousness studies (the nature of subjective experience)
-        """)
-        
-        with st.expander("💡 Philosophical Reflection"):
-            st.markdown("""
-            **Consider these questions:**
-            
-            1. **Identity**: What do you consider your "true self"? Is it your body, mind, memories, or something else?
-            
-            2. **Unity vs. Multiplicity**: Do you see reality as fundamentally one or many? What evidence supports each view?
-            
-            3. **Knowledge**: Can some truths only be known through direct experience rather than reasoning? What might be examples?
-            
-            4. **East meets West**: How might we combine the Upanishadic emphasis on unity with the Western emphasis on analysis and argument?
-            """)
-
-elif page == "🎯 Interactive Quiz":
-    st.header("🎯 Test Your Understanding")
-    
-    show_score()
-    
-    if st.session_state.current < len(st.session_state.questions):
-        show_question()
-    else:
-        st.balloons()
-        st.success(f"🎉 **Quiz Complete!** Final Score: {st.session_state.score} XP")
-        
-        # Performance analysis
-        total_possible = len(st.session_state.questions) * 10
-        percentage = (st.session_state.score / total_possible) * 100
-        
-        if percentage >= 90:
-            st.success("🏆 **Philosophy Master!** You've mastered the fundamentals of philosophical thinking.")
-        elif percentage >= 80:
-            st.info("🎓 **Advanced Understanding** - You have a solid grasp of core concepts!")
-        elif percentage >= 70:
-            st.warning("📚 **Good Progress** - Review the learning modules for deeper understanding.")
-        else:
-            st.error("🔄 **Keep Learning** - Spend more time with the learning modules before retaking.")
-        
-        restart_quiz()
-
-elif page == "📊 Visualizations":
-    create_visualizations()
-
-elif page == "📚 Reference Guide":
-    st.header("📚 Quick Reference Guide")
-    
-    tab1, tab2, tab3, tab4 = st.tabs(["Key Terms", "Philosophers", "Arguments", "Study Tips"])
-    
-    with tab1:
-        st.subheader("Essential Philosophical Terms")
-        
-        terms = {
-            "Philosophy": "The systematic examination of fundamental questions about reality, knowledge, values, and existence",
-            "Epistemology": "The branch of philosophy that studies the nature, sources, and limits of knowledge",
-            "Metaphysics": "The branch of philosophy that examines the nature of reality and existence",
-            "Logic": "The study of valid reasoning and argument structure",
-            "Claim": "A statement that can be either true or false",
-            "Argument": "A set of premises offered in support of a conclusion",
-            "Premise": "A statement that provides evidence or support for a conclusion",
-            "Conclusion": "The statement that premises are meant to support",
-            "Valid": "An argument where the conclusion follows logically from the premises",
-            "Sound": "A valid argument with true premises",
-            "Vague": "Using words that are not precise or whose boundaries are unclear",
-            "Ambiguous": "Using words that can have several possible meanings",
-            "A Priori": "Knowledge that can be known independently of experience",
-            "A Posteriori": "Knowledge that requires experience to be known",
-            "Rationalism": "The view that reason is the primary source of knowledge",
-            "Empiricism": "The view that sensory experience is the primary source of knowledge",
-            "Skepticism": "The view that questions whether certain or any knowledge is possible",
-            "Brahman": "In the Upanishads, the ultimate reality underlying all existence",
-            "Atman": "In the Upanishads, the true self or soul within each individual"
-        }
-        
-        for term, definition in terms.items():
-            with st.expander(f"**{term}**"):
-                st.write(definition)
-    
-    with tab2:
-        st.subheader("Key Philosophers")
-        
-        philosophers = {
-            "Thales (c. 624-546 BCE)": {
-                "Key Idea": "Water is the fundamental substance; natural phenomena have natural explanations",
-                "Significance": "First Western philosopher to seek rational rather than mythological explanations",
-                "Quote": "'All things are full of gods' (meaning natural forces, not supernatural beings)"
-            },
-            "Heraclitus (c. 535-475 BCE)": {
-                "Key Idea": "Everything flows - reality is constant change and flux",
-                "Significance": "Emphasized the role of change and opposition in understanding reality",
-                "Quote": "You cannot step into the same river twice"
-            },
-            "Parmenides (c. 515-450 BCE)": {
-                "Key Idea": "Change is illusion - reality is eternal, unchanging Being",
-                "Significance": "Used pure reason to argue against the evidence of the senses",
-                "Quote": "What is, is; what is not, is not"
-            },
-            "Zeno of Elea (c. 490-430 BCE)": {
-                "Key Idea": "Motion and change lead to logical contradictions",
-                "Significance": "Created paradoxes that challenged assumptions about space and time",
-                "Quote": "The moving arrow is at rest"
-            },
-            "Socrates (470-399 BCE)": {
-                "Key Idea": "The unexamined life is not worth living; true knowledge begins with admitting ignorance",
-                "Significance": "Developed the method of systematic questioning to test beliefs",
-                "Quote": "I know that I know nothing"
-            }
-        }
-        
-        for name, info in philosophers.items():
-            with st.expander(f"**{name}**"):
-                st.write(f"**Key Idea**: {info['Key Idea']}")
-                st.write(f"**Significance**: {info['Significance']}")
-                st.write(f"**Famous Quote**: '{info['Quote']}'")
-    
-    with tab3:
-        st.subheader("Argument Analysis Guide")
-        
-        st.markdown("""
-        ## Steps for Analyzing Arguments
-        
-        1. **Identify the Conclusion**: What is the main point being argued?
-        2. **Find the Premises**: What evidence or reasons support the conclusion?
-        3. **Check for Hidden Assumptions**: What unstated beliefs are required?
-        4. **Evaluate Validity**: Does the conclusion follow logically from the premises?
-        5. **Assess Truth**: Are the premises actually true?
-        
-        ## Common Argument Forms
-        
-        **Deductive (All A are B, X is A, therefore X is B)**
-        - If premises are true, conclusion must be true
-        - Example: All humans are mortal, Socrates is human, therefore Socrates is mortal
-        
-        **Inductive (Pattern-based reasoning)**
-        - Premises make conclusion probable, not certain
-        - Example: The sun has risen every day in the past, therefore it will rise tomorrow
-        
-        **Abductive (Inference to best explanation)**
-        - Conclusion explains the evidence better than alternatives
-        - Example: The ground is wet, therefore it probably rained
-        
-        ## Argument Errors to Avoid
-        
-        - **Ad Hominem**: Attacking the person instead of their argument
-        - **Straw Man**: Misrepresenting someone's position to make it easier to attack
-        - **False Dichotomy**: Presenting only two options when more exist
-        - **Circular Reasoning**: Using the conclusion to support itself
-        - **Appeal to Authority**: Accepting a claim just because an authority said it
-        """)
-    
-    with tab4:
-        st.subheader("Study Tips & Strategies")
-        
-        st.markdown("""
-        ## Effective Philosophy Study Methods
-        
-        **Active Reading:**
-        - Ask questions as you read: "What is the main claim? What evidence supports it?"
-        - Summarize key points in your own words
-        - Look up unfamiliar terms immediately
-        
-        **Critical Analysis:**
-        - Don't just memorize - understand the reasoning
-        - Practice identifying premises and conclusions
-        - Consider alternative viewpoints and counterarguments
-        
-        **Discussion & Debate:**
-        - Explain concepts to others to test your understanding
-        - Engage in respectful philosophical discussions
-        - Be willing to change your mind when presented with better arguments
-        
-        **Writing Practice:**
-        - Write out arguments in standard form
-        - Practice defining vague or ambiguous terms
-        - Construct your own philosophical arguments
-        
-        ## Common Study Mistakes
-        
-        **Avoid these pitfalls:**
-        - Thinking philosophy is just about opinions (it's about reasoned arguments)
-        - Memorizing without understanding the logic
-        - Dismissing ideas without considering them carefully
-        - Confusing difficult with impossible to understand
-        
-        ## Quiz Preparation
-        
-        **Before taking the quiz:**
-        1. Review all learning modules thoroughly
-        2. Practice identifying arguments and their components
-        3. Make sure you can define key terms clearly
-        4. Understand the historical significance of major philosophers
-        5. Practice applying concepts to new examples
-        
-        **During the quiz:**
-        - Read questions carefully - philosophy is precise
-        - Eliminate obviously wrong answers first
-        - Consider what concepts each question is testing
-        - Don't overthink - your first careful analysis is often correct
-        """)
-
-elif page == "🔗 Resources & Links":
-    st.header("🔗 Philosophy Resources & External Links")
-    st.markdown("**Expand your philosophical knowledge with these curated resources**")
-    
-    # Create tabs for different resource categories
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["📚 Academic Resources", "🛠️ Logic Tools", "🎬 Videos & Podcasts", "📖 Classic Texts", "💻 Practice Platforms"])
-    
-    with tab1:
-        st.subheader("📚 Academic Databases & Encyclopedias")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("### 🎓 Primary Academic Sources")
-            
-            if st.button("📖 Stanford Encyclopedia of Philosophy", use_container_width=True):
-                st.markdown("**[Open Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/)**")
-                st.success("The most authoritative philosophy reference - peer-reviewed articles by experts on every philosophical topic.")
-                st.info("**Recommended articles**: Epistemology, Knowledge Analysis, Ancient Philosophy, Rationalism vs Empiricism")
-            
-            if st.button("📚 Internet Encyclopedia of Philosophy", use_container_width=True):
-                st.markdown("**[Open Internet Encyclopedia of Philosophy](https://iep.utm.edu/)**")
-                st.success("Comprehensive philosophy articles with more accessible language than SEP.")
-                st.info("**Recommended sections**: Epistemology, Pre-Socratic Philosophy, Indian Philosophy")
-            
-            if st.button("🔍 PhilPapers Database", use_container_width=True):
-                st.markdown("**[Search PhilPapers.org](https://philpapers.org/)**")
-                st.success("Search over 2.9 million philosophy papers and books.")
-                st.info("**Try searching**: 'epistemology basics', 'pre-socratic philosophy', 'knowledge definition'")
-        
-        with col2:
-            st.markdown("### 🏛️ University Resources")
-            
-            if st.button("🎓 MIT OpenCourseWare Philosophy", use_container_width=True):
-                st.markdown("**[Access MIT Philosophy Courses](https://ocw.mit.edu/courses/linguistics-and-philosophy/)**")
-                st.success("Free access to actual MIT philosophy course materials and lectures.")
-                st.info("**Recommended**: Introduction to Philosophy, Epistemology, Logic")
-            
-            if st.button("📺 Yale Open Courses", use_container_width=True):
-                st.markdown("**[Yale Philosophy Lectures](https://oyc.yale.edu/philosophy)**")
-                st.success("Full video lectures from Yale philosophy professors.")
-                st.info("**Start with**: Introduction to Philosophy (PHIL 181)")
-            
-            if st.button("📊 Philosophy Compass", use_container_width=True):
-                st.markdown("**[Philosophy Compass](https://onlinelibrary.wiley.com/journal/17479991)**")
-                st.success("Short, accessible surveys of philosophical topics.")
-                st.info("**Note**: May require library access through your institution")
-    
-    with tab2:
-        st.subheader("🛠️ Interactive Logic & Reasoning Tools")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("### ⚡ Logic Practice Tools")
-            
-            if st.button("🔬 MIT Logitext", use_container_width=True):
-                st.markdown("**[Open MIT Logitext](https://logitext.mit.edu/main)**")
-                st.success("Interactive logic tool for practicing propositional and predicate logic.")
-                st.code("Try this: (P ∧ Q) → R")
-                st.info("Perfect for understanding logical operators and argument forms!")
-            
-            if st.button("📊 Stanford Truth Table Tool", use_container_width=True):
-                st.markdown("**[Stanford Truth Table Generator](https://web.stanford.edu/class/cs103/tools/truth-table-tool/)**")
-                st.success("Generate truth tables for any logical expression.")
-                st.info("**Example**: Input 'P ∧ Q' to see how conjunction works")
-            
-            if st.button("🎯 Logic & Proofs Platform", use_container_width=True):
-                st.markdown("**[Open Logic & Proofs](https://logicinaction.org/)**")
-                st.success("Interactive exercises for learning formal logic step by step.")
-        
-        with col2:
-            st.markdown("### 📈 Argument Analysis Tools")
-            
-            if st.button("🗺️ Rationale Online", use_container_width=True):
-                st.markdown("**[Rationale Argument Mapping](https://www.rationaleonline.com/)**")
-                st.success("Visual argument analysis - map premises and conclusions.")
-                st.info("Great for understanding the structure of complex philosophical arguments")
-            
-            if st.button("🔍 Argument Clinic", use_container_width=True):
-                st.markdown("**[The Argument Clinic](https://www.criticalthinking.org.uk/)**")
-                st.success("Interactive critical thinking exercises and argument evaluation.")
-            
-            if st.button("📝 Critical Thinking Web", use_container_width=True):
-                st.markdown("**[Critical Thinking Web (UBC)](https://philosophy.hku.hk/think/)**")
-                st.success("University of Hong Kong's comprehensive critical thinking tutorials.")
-    
-    with tab3:
-        st.subheader("🎬 Educational Videos & Podcasts")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("### 🎧 Philosophy Podcasts")
-            
-            if st.button("🎭 Philosophy Bites", use_container_width=True):
-                st.markdown("**[Philosophy Bites Podcast](https://www.philosophybites.com/)**")
-                st.success("15-minute interviews with leading philosophers on key topics.")
-                st.info("**Start with**: 'What is Knowledge?' and 'The Importance of Philosophy'")
-            
-            if st.button("🧠 The History of Philosophy", use_container_width=True):
-                st.markdown("**[History of Philosophy Podcast](https://historyofphilosophy.net/)**")
-                st.success("Comprehensive journey through philosophical history without any gaps.")
-                st.info("**Episodes 1-20**: Perfect introduction to Pre-Socratic philosophers")
-            
-            if st.button("🤔 Philosophy Talk", use_container_width=True):
-                st.markdown("**[Philosophy Talk](https://www.philosophytalk.org/)**")
-                st.success("Stanford's radio show making philosophy accessible to everyone.")
-        
-        with col2:
-            st.markdown("### 📺 Educational Videos")
-            
-            if st.button("🎓 Crash Course Philosophy", use_container_width=True):
-                st.markdown("**[Crash Course Philosophy Playlist](https://www.youtube.com/playlist?list=PL8dPuuaLjXtNgK6MZucdYldNkMybYIHKR)**")
-                st.success("Engaging 10-minute videos covering major philosophical concepts.")
-                st.info("**Episode 8**: 'Knowledge & Skepticism' directly relates to our epistemology module")
-            
-            if st.button("🎬 TED-Ed Philosophy", use_container_width=True):
-                st.markdown("**[TED-Ed Philosophy Videos](https://www.youtube.com/results?search_query=TED-Ed+philosophy)**")
-                st.success("High-quality animated explanations of philosophical concepts.")
-                st.info("**Recommended**: 'Plato's Allegory of the Cave' and 'What is Consciousness?'")
-            
-            if st.button("🏛️ Academy of Ideas", use_container_width=True):
-                st.markdown("**[Academy of Ideas](https://www.youtube.com/c/AcademyofIdeas)**")
-                st.success("In-depth explorations of philosophical and psychological concepts.")
-    
-    with tab4:
-        st.subheader("📖 Classical Philosophy Texts")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("### 📜 Primary Sources")
-            
-            if st.button("📚 Project Gutenberg Philosophy", use_container_width=True):
-                st.markdown("**[Free Classical Philosophy Texts](https://www.gutenberg.org/ebooks/subject/11)**")
-                st.success("Free access to classic philosophical works in the public domain.")
-                st.info("**Includes**: Plato's dialogues, Aristotle's works, and more")
-            
-            if st.button("🏛️ Perseus Digital Library", use_container_width=True):
-                st.markdown("**[Perseus Ancient Philosophy](http://www.perseus.tufts.edu/)**")
-                st.success("Original Greek and Latin texts with English translations.")
-                st.info("**Perfect for**: Reading Pre-Socratic fragments in context")
-            
-            if st.button("📖 Sacred Texts - Philosophy", use_container_width=True):
-                st.markdown("**[Sacred-Texts Philosophy Section](https://www.sacred-texts.com/phi/)**")
-                st.success("Including the Upanishads and other Eastern philosophical texts.")
-                st.info("**Recommended**: The Principal Upanishads for 'That art thou' context")
-        
-        with col2:
-            st.markdown("### 🔖 Study Guides")
-            
-            if st.button("📝 SparkNotes Philosophy", use_container_width=True):
-                st.markdown("**[SparkNotes Philosophy Study Guides](https://www.sparknotes.com/philosophy/)**")
-                st.success("Accessible summaries of major philosophical works and thinkers.")
-                st.info("**Helpful for**: Quick reviews of philosopher's main ideas")
-            
-            if st.button("📊 Philosophy Study Guides", use_container_width=True):
-                st.markdown("**[Various University Study Guides](https://www.google.com/search?q=philosophy+study+guides+university)**")
-                st.success("Many universities provide free study guides for philosophy courses.")
-            
-            if st.button("🎯 CliffsNotes Philosophy", use_container_width=True):
-                st.markdown("**[CliffsNotes Philosophy](https://www.cliffsnotes.com/study-guides/philosophy)**")
-                st.success("Structured study guides for major philosophical topics.")
-    
-    with tab5:
-        st.subheader("💻 Interactive Practice Platforms")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("### 🎮 Philosophy Games & Quizzes")
-            
-            if st.button("🧩 Philosophical Health Check", use_container_width=True):
-                st.markdown("**[Philosophy Health Check](https://www.philosophyexperiments.com/)**")
-                st.success("Test the consistency of your philosophical beliefs.")
-                st.info("Interactive thought experiments that challenge your reasoning")
-            
-            if st.button("🎯 Philosophy Quiz Sites", use_container_width=True):
-                st.markdown("**[Various Philosophy Quizzes](https://www.sporcle.com/games/subcategory/philosophy)**")
-                st.success("Test your knowledge of philosophers, concepts, and arguments.")
-            
-            if st.button("🤔 Thought Experiment Hub", use_container_width=True):
-                st.markdown("**[Thought Experiments](https://www.google.com/search?q=interactive+philosophy+thought+experiments)**")
-                st.success("Explore classic philosophical puzzles interactively.")
-        
-        with col2:
-            st.markdown("### 📚 Study Communities")
-            
-            if st.button("💬 Reddit Philosophy", use_container_width=True):
-                st.markdown("**[r/philosophy](https://www.reddit.com/r/philosophy/)**")
-                st.success("Active discussions about philosophical topics.")
-                st.warning("**Remember**: Always verify information with academic sources")
-            
-            if st.button("🎓 Philosophy Forums", use_container_width=True):
-                st.markdown("**[Philosophy Forums](https://www.philosophyforums.com/)**")
-                st.success("Discuss philosophical questions with other students and enthusiasts.")
-            
-            if st.button("📱 Philosophy Apps", use_container_width=True):
-                st.markdown("**[Search App Stores](https://www.google.com/search?q=philosophy+apps+education)**")
-                st.success("Many mobile apps offer philosophy quizzes and concept reviews.")
-    
-    st.markdown("---")
-    st.subheader("🎯 How to Use These Resources Effectively")
-    
-    tip_cols = st.columns(3)
-    with tip_cols[0]:
-        st.markdown("""
-        **📖 For Deeper Learning**
-        - Use Stanford Encyclopedia for authoritative information
-        - Watch Crash Course videos for visual explanations
-        - Listen to Philosophy Bites for expert perspectives
-        """)
-    
-    with tip_cols[1]:
-        st.markdown("""
-        **🛠️ For Practice**
-        - Use logic tools to understand argument structure
-        - Try interactive exercises to test comprehension
-        - Join forums for discussion and debate
-        """)
-    
-    with tip_cols[2]:
-        st.markdown("""
-        **📚 For Research**
-        - Start with our learning modules for foundation
-        - Use PhilPapers for current scholarship
-        - Verify information across multiple sources
-        """)
-    
-    st.info("💡 **Study Tip**: Always return to our learning modules to connect external resources with course concepts!")
-
-elif page == "🤖 AI Philosophy Tutor":
-    st.header("🤖 AI Philosophy Tutor")
-    st.markdown("**Get personalized help with philosophical concepts and questions**")
+            **Case 3**: Sarah believes there are books in the library because libraries typically contain books. Thereelif page == "🤖 Epistemology AI Tutor":
+    st.header("🤖 Your Personal Epistemology Tutor")
+    st.markdown("**Get expert help with knowledge, truth, and justification concepts**")
     
     try:
         import anthropic
@@ -1331,32 +817,32 @@ elif page == "🤖 AI Philosophy Tutor":
         # Initialize Anthropic client
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
         
-        # Suggested questions
-        st.subheader("💡 Quick Help Topics")
+        # Epistemology-specific suggested questions
+        st.subheader("💡 Common Epistemology Questions")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("**Concepts & Definitions:**")
-            if st.button("What's the difference between knowledge and opinion?", use_container_width=True):
-                st.session_state.current_question = "Explain the difference between knowledge and opinion, and how philosophers distinguish between them."
+            st.markdown("**Knowledge & Truth:**")
+            if st.button("What exactly is knowledge vs. true belief?", use_container_width=True):
+                st.session_state.current_question = "I'm struggling to understand the difference between knowledge and true belief. Can you explain this with examples and discuss why justification matters?"
             
-            if st.button("How do I identify premises and conclusions?", use_container_width=True):
-                st.session_state.current_question = "How do I identify the premises and conclusion in a philosophical argument? Can you give me some examples?"
+            if st.button("Help me understand the Gettier problem", use_container_width=True):
+                st.session_state.current_question = "The Gettier problem seems to challenge justified true belief as the definition of knowledge. Can you walk me through this with clear examples?"
             
-            if st.button("What made Thales revolutionary?", use_container_width=True):
-                st.session_state.current_question = "Why was Thales considered revolutionary in the history of philosophy? What made his approach different?"
+            if st.button("What's the problem of the criterion?", use_container_width=True):
+                st.session_state.current_question = "I don't understand the problem of the criterion in epistemology. How is this circular and why does it matter?"
         
         with col2:
-            st.markdown("**Problem-Solving:**")
-            if st.button("Help me understand Zeno's paradoxes", use_container_width=True):
-                st.session_state.current_question = "Can you explain Zeno's paradoxes and why they were philosophically important? How might we resolve them?"
+            st.markdown("**Sources & Methods:**")
+            if st.button("Rationalism vs Empiricism - which is right?", use_container_width=True):
+                st.session_state.current_question = "Can you help me understand the debate between rationalists and empiricists? Do we need both reason and experience for knowledge?"
             
-            if st.button("Explain rationalism vs empiricism", use_container_width=True):
-                st.session_state.current_question = "What's the difference between rationalism and empiricism in epistemology? Can you give examples of each?"
+            if st.button("A priori vs a posteriori knowledge", use_container_width=True):
+                st.session_state.current_question = "What's the difference between a priori and a posteriori knowledge? Can you give clear examples of each?"
             
-            if st.button("What does 'That art thou' mean?", use_container_width=True):
-                st.session_state.current_question = "Explain the meaning and significance of 'That art thou' from the Upanishads. What philosophical insight does it convey?"
+            if st.button("How do I avoid vague philosophical claims?", use_container_width=True):
+                st.session_state.current_question = "Our readings mention avoiding vague and ambiguous claims. How do I make my philosophical arguments clearer and more precise?"
         
         # Initialize chat history
         if 'tutor_chat_history' not in st.session_state:
@@ -1368,7 +854,7 @@ elif page == "🤖 AI Philosophy Tutor":
             del st.session_state.current_question
         
         # Chat interface
-        st.subheader("💬 Ask Your Philosophy Tutor")
+        st.subheader("💬 Ask Your Epistemology Expert")
         
         # Display chat history
         for i, (question, answer) in enumerate(st.session_state.tutor_chat_history):
@@ -1379,48 +865,152 @@ elif page == "🤖 AI Philosophy Tutor":
         
         # User input
         user_question = st.text_area(
-            "Ask your question:",
+            "Ask your epistemology question:",
             value=st.session_state.get('user_input', ''),
             height=100,
-            placeholder="e.g., I'm confused about the difference between Heraclitus and Parmenides..."
+            placeholder="e.g., I'm confused about how coherentism differs from foundationalism..."
         )
         
         col1, col2 = st.columns([1, 4])
         with col1:
-            ask_button = st.button("📚 Ask Tutor", type="primary")
+            ask_button = st.button("🎓 Ask Expert", type="primary")
         with col2:
             if st.button("🗑️ Clear Chat"):
                 st.session_state.tutor_chat_history = []
                 st.rerun()
         
         if ask_button and user_question.strip():
-            with st.spinner("🤔 Thinking about your question..."):
+            with st.spinner("🤔 Analyzing your epistemology question..."):
                 try:
-                    # Create tutor prompt
-                    system_prompt = """You are a philosophy tutor helping students learn the fundamentals of philosophy and epistemology. Your role is to:
+                    # Create specialized epistemology tutor prompt
+                    system_prompt = """You are an expert epistemology tutor for PHL201, specializing in the theory of knowledge. Your role is to:
 
-1. Explain concepts clearly and accurately
-2. Help students understand rather than just giving answers
-3. Use Socratic questioning when appropriate
-4. Provide examples to illustrate abstract concepts
-5. Connect ideas to show how philosophical concepts relate
-6. Encourage critical thinking
+1. Explain epistemological concepts clearly and accurately
+2. Help students understand knowledge, truth, justification, and belief
+3. Use Socratic questioning to deepen understanding
+4. Connect ideas to course readings and standard epistemological problems
+5. Provide concrete examples to illustrate abstract concepts
+6. Encourage rigorous philosophical thinking
 
-The course covers:
-- Nature of philosophy and its methods
-- Critical thinking and argument analysis
-- Epistemology (theory of knowledge)
-- Pre-Socratic philosophers (Thales, Heraclitus, Parmenides, Zeno)
-- Knowledge vs opinion
-- Eastern philosophy (Upanishads)
-- Philosophical claims, vagueness, and ambiguity
+Key course topics include:
+- The nature and definition of knowledge (JTB and post-Gettier theories)
+- Rationalism vs empiricism 
+- A priori vs a posteriori knowledge
+- The problem of the criterion
+- Skepticism and its challenges
+- Foundationalism vs coherentism vs reliabilism
+- Theoretical vs anarchic thinking (as discussed in course readings)
+- Avoiding vague and ambiguous claims in philosophical arguments
+- Internalism vs externalism
+- The Gettier problem and responses to it
 
-Be encouraging and patient, but also challenge students to think deeply. When they ask for help understanding a concept, don't just define it - help them see why it matters and how it connects to other ideas."""
+Always:
+- Give precise philosophical definitions
+- Use clear examples to illustrate complex concepts
+- Ask follow-up questions to test understanding
+- Connect new concepts to what students already know
+- Encourage critical thinking about knowledge claims
+- Reference major epistemological debates and positions
+
+Be encouraging but academically rigorous. Help students see why epistemology matters for understanding knowledge in all areas of life."""
 
                     # Get response from Claude
                     message = client.messages.create(
-                        model="claude-3-haiku-20240307",
-                        max_tokens=1000,
+                        model="claude-3-sonnet-20240229",
+                        max_tokens=800,
+                        temperature=0.7,
+                        messages=[{
+                            "role": "user", 
+                            "content": prompt
+                        }]
+                    )
+                    
+                    response = message.content[0].text
+                    
+                    # Add to reflection history
+                    st.session_state.reflection_history[selected_topic].append((user_reflection, response))
+                    
+                    # Display the discussion
+                    st.markdown("### Discussion")
+                    st.markdown(f"**Your Reflection:** {user_reflection}")
+                    st.markdown(f"**AI Response:** {response}")
+                    
+                except Exception as e:
+                    st.error("AI discussion temporarily unavailable. Please reflect on the questions above.")
+        
+        # Display previous discussions
+        if st.session_state.reflection_history[selected_topic]:
+            st.markdown("### Previous Discussions")
+            for reflection, response in st.session_state.reflection_history[selected_topic]:
+                with st.expander(f"Discussion: {reflection[:50]}..."):
+                    st.markdown(f"**Your Reflection:** {reflection}")
+                    st.markdown(f"**AI Response:** {response}")
+    
+    elif selected_topic == "The Reliability of Our Senses":
+        st.subheader("👁️ The Reliability of Our Senses")
+        st.markdown("""
+        **Reflection Prompt:** Our senses can deceive us - optical illusions, dreams that feel real, false memories.
+        
+        **Key Questions:**
+        - Can you think of times your senses have misled you?
+        - If our senses are unreliable, how can we trust empirical knowledge?
+        - What does this mean for the empiricist claim that knowledge comes from experience?
+        - How do we distinguish between reliable and unreliable sensory experiences?
+        """)
+    
+    elif selected_topic == "Can We Trust Our Memory?":
+        st.subheader("🧠 Can We Trust Our Memory?")
+        st.markdown("""
+        **Reflection Prompt:** Memory seems essential for knowledge, but research shows memory is reconstructive and often inaccurate.
+        
+        **Key Questions:**
+        - How much of your knowledge depends on memory?
+        - What happens to knowledge claims if memory is unreliable?
+        - Can you distinguish between reliable and unreliable memories?
+        - Does this pose a problem for personal identity and knowledge of the past?
+        """)
+    
+    elif selected_topic == "The Role of Authority in Knowledge":
+        st.subheader("👨‍🏫 The Role of Authority in Knowledge")
+        st.markdown("""
+        **Reflection Prompt:** Much of what we "know" comes from teachers, experts, books, and other authorities.
+        
+        **Key Questions:**
+        - How do you decide which authorities to trust?
+        - Is knowledge from authority really knowledge, or just belief?
+        - What's the difference between appealing to legitimate vs. illegitimate authority?
+        - How do we balance trust in experts with thinking for ourselves?
+        """)
+    
+    elif selected_topic == "Skepticism and Certainty":
+        st.subheader("❓ Skepticism and Certainty")
+        st.markdown("""
+        **Reflection Prompt:** Skeptics argue we can't be certain about knowledge claims. Maybe we're dreaming, or being deceived.
+        
+        **Key Questions:**
+        - Is absolute certainty necessary for knowledge?
+        - How do you respond to skeptical challenges like "How do you know you're not dreaming?"
+        - What's the difference between reasonable doubt and skeptical doubt?
+        - Can we live as skeptics, or is some trust in our faculties necessary?
+        """)
+    
+    elif selected_topic == "The Value of Philosophical Doubt":
+        st.subheader("🤔 The Value of Philosophical Doubt")
+        st.markdown("""
+        **Reflection Prompt:** Philosophy encourages us to question our assumptions and examine our beliefs critically.
+        
+        **Key Questions:**
+        - What beliefs have you questioned through studying philosophy?
+        - Is there value in doubting what seems obvious?
+        - How do we balance healthy skepticism with practical decision-making?
+        - What's the difference between philosophical doubt and everyday doubt?
+        """)
+
+# Footer
+st.markdown("---")
+st.markdown("**PHL201 Epistemology | Developed by Xavier Honablue M.Ed | CognitiveCloud.ai**")
+st.caption("Interactive Learning Platform for Theory of Knowledge")229",
+                        max_tokens=1500,
                         temperature=0.7,
                         system=system_prompt,
                         messages=[{
@@ -1442,41 +1032,280 @@ Be encouraging and patient, but also challenge students to think deeply. When th
                     
                 except Exception as e:
                     st.error(f"Error getting response: {str(e)}")
-                    st.info("Please check your API key and try again.")
+                    st.info("Please check your API connection and try again.")
     
     except ImportError:
         st.error("📦 Missing required library. Please install: `pip install anthropic`")
     
-    # Study tips
+    # Study tips for epistemology
     st.markdown("---")
-    st.subheader("💡 How to Use Your AI Tutor Effectively")
+    st.subheader("💡 How to Excel in Epistemology")
     
     tip_cols = st.columns(3)
     with tip_cols[0]:
         st.markdown("""
-        **🎯 Be Specific**
-        - Ask about particular concepts you're struggling with
-        - Provide context about what you do and don't understand
-        - Give examples when possible
+        **🎯 Master Key Concepts**
+        - Focus on the JTB definition and its problems
+        - Understand the rationalism/empiricism debate
+        - Practice identifying different types of knowledge claims
         """)
     
     with tip_cols[1]:
         st.markdown("""
-        **🤔 Engage Actively**
-        - Ask follow-up questions
-        - Challenge ideas respectfully
-        - Connect new concepts to what you already know
+        **🤔 Think Critically**
+        - Question your own knowledge claims
+        - Look for hidden assumptions in arguments
+        - Practice the Socratic method on yourself
         """)
     
     with tip_cols[2]:
         st.markdown("""
-        **📚 Apply Learning**
-        - Use the tutor to clarify learning module content
-        - Get help understanding quiz questions
-        - Practice explaining concepts in your own words
+        **📚 Apply Concepts**
+        - Use course readings to clarify difficult points
+        - Connect epistemology to other areas of knowledge
+        - Practice constructing clear, non-vague arguments
         """)
 
-# Footer
-st.markdown("---")
-st.markdown("**Built for philosophical learning | Philosophy Foundations & Epistemology CognitiveCloud.ai**")
-st.caption("© 2024 Interactive Philosophy Education Platform")
+elif page == "💭 Reflection Discussions":
+    st.header("💭 Interactive Reflection Discussions")
+    st.markdown("**Engage with key epistemological questions through AI-guided discussions**")
+    
+    # Select reflection topic
+    reflection_topics = [
+        "Knowledge vs. Opinion in Daily Life",
+        "The Reliability of Our Senses", 
+        "Can We Trust Our Memory?",
+        "The Role of Authority in Knowledge",
+        "Skepticism and Certainty",
+        "The Value of Philosophical Doubt"
+    ]
+    
+    selected_topic = st.selectbox("Choose a reflection topic:", reflection_topics)
+    
+    # Topic-specific reflection prompts
+    if selected_topic == "Knowledge vs. Opinion in Daily Life":
+        st.subheader("🤔 Knowledge vs. Opinion in Daily Life")
+        st.markdown("""
+        **Reflection Prompt:** Think about something you believed you "knew" but later discovered was just opinion or false belief. 
+        
+        **Key Questions:**
+        - What made you think it was knowledge rather than opinion?
+        - How did you discover your error?
+        - What does this tell us about the difference between knowledge and belief?
+        - How can we better distinguish knowledge from strongly held opinions?
+        """)
+        
+        # AI Discussion Interface
+        if 'reflection_history' not in st.session_state:
+            st.session_state.reflection_history = {}
+        
+        if selected_topic not in st.session_state.reflection_history:
+            st.session_state.reflection_history[selected_topic] = []
+        
+        user_reflection = st.text_area(
+            "Share your thoughts and experiences:",
+            height=150,
+            placeholder="Describe a time when you thought you knew something but were wrong..."
+        )
+        
+        if st.button("💬 Discuss with AI", type="primary"):
+            if user_reflection.strip():
+                # AI response for reflection discussion
+                try:
+                    import anthropic
+                    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+                    
+                    prompt = f"""You are facilitating a philosophical reflection discussion on knowledge vs. opinion. 
+                    A student has shared: "{user_reflection}"
+                    
+                    Respond by:
+                    1. Acknowledging their reflection thoughtfully
+                    2. Asking 2-3 probing questions that deepen their thinking
+                    3. Connecting their experience to epistemological concepts
+                    4. Encouraging further reflection
+                    
+                    Be supportive but intellectually challenging. Help them see the philosophical significance of their experience."""
+                    
+                    message = client.messages.create(
+                        model="claude-3-sonnet-20240import streamlit as st
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from typing import List, Dict, Optional
+import random
+
+# 🔐 SECURE API KEY HANDLING
+ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
+
+st.set_page_config(page_title="PHL201 Epistemology - CognitiveCloud.ai", layout="wide", initial_sidebar_state="expanded")
+
+# 40 epistemology-focused questions based on course readings
+questions = [
+    ("What is epistemology?", 
+     ["The study of being and existence", "The attempt to determine what knowledge and truth are", "The study of ethics and morality", "The analysis of logical arguments"], 
+     "The attempt to determine what knowledge and truth are"),
+    
+    ("According to the course readings, what is a philosophical claim?", 
+     ["A statement about emotions", "A declarative sentence that can be true or false", "A question without an answer", "A religious belief"], 
+     "A declarative sentence that can be true or false"),
+    
+    ("Stenstad distinguishes between theoretical and anarchic thinking. Theoretical thinking holds that:", 
+     ["Multiple contradictory views can be true", "If one view is correct, different views must be incorrect", "All opinions are equally valid", "Truth is relative to culture"], 
+     "If one view is correct, different views must be incorrect"),
+    
+    ("What makes a philosophical claim 'vague'?", 
+     ["It's about abstract concepts", "It uses words that are not precise or whose boundaries are unclear", "It's controversial", "It's too complex"], 
+     "It uses words that are not precise or whose boundaries are unclear"),
+    
+    ("An ambiguous claim is problematic because:", 
+     ["It's necessarily false", "It can have several possible meanings", "It's too simple", "It requires advanced knowledge"], 
+     "It can have several possible meanings"),
+    
+    ("How can we avoid vagueness in philosophical claims?", 
+     ["Use more technical vocabulary", "Define important terms through examples, synonyms, or explanations", "Avoid difficult topics", "Only discuss proven facts"], 
+     "Define important terms through examples, synonyms, or explanations"),
+    
+    ("What distinguishes philosophical arguments from mere opinions?", 
+     ["They're always true", "They provide premises to support conclusions", "They're more popular", "They're easier to understand"], 
+     "They provide premises to support conclusions"),
+    
+    ("In standard argument form, what comes after the premises?", 
+     ["More premises", "The conclusion preceded by 'therefore'", "Questions", "Examples"], 
+     "The conclusion preceded by 'therefore'"),
+    
+    ("The classical definition of knowledge is:", 
+     ["True belief", "Justified true belief", "Certain belief", "Popular belief"], 
+     "Justified true belief"),
+    
+    ("Rationalism emphasizes which source of knowledge?", 
+     ["Sensory experience only", "Reason and logic", "Authority and tradition", "Intuition only"], 
+     "Reason and logic"),
+    
+    ("Empiricism emphasizes which source of knowledge?", 
+     ["Pure reason only", "Sensory experience and observation", "Divine revelation", "Mathematical proof"], 
+     "Sensory experience and observation"),
+    
+    ("A priori knowledge is:", 
+     ["Knowledge gained through experience", "Knowledge that can be known independently of experience", "Knowledge from authorities", "Knowledge that changes over time"], 
+     "Knowledge that can be known independently of experience"),
+    
+    ("A posteriori knowledge requires:", 
+     ["Pure reasoning only", "Experience and observation", "Mathematical proof", "Authority confirmation"], 
+     "Experience and observation"),
+    
+    ("The problem of the criterion in epistemology refers to:", 
+     ["Difficulty measuring knowledge", "The circular challenge of needing criteria for truth to establish criteria for truth", "The cost of education", "The time required for learning"], 
+     "The circular challenge of needing criteria for truth to establish criteria for truth"),
+    
+    ("Skepticism in epistemology questions:", 
+     ["Only religious beliefs", "Whether certain or any knowledge is possible", "Only scientific claims", "Only philosophical arguments"], 
+     "Whether certain or any knowledge is possible"),
+    
+    ("According to course readings, why should philosophical claims be supported by arguments?", 
+     ["To make them longer", "Because unsupported claims are inadequate in philosophy", "To confuse opponents", "To show intelligence"], 
+     "Because unsupported claims are inadequate in philosophy"),
+    
+    ("What is the relationship between premises and conclusions in arguments?", 
+     ["They're unrelated", "Premises provide logical support for conclusions", "Conclusions support premises", "They're the same thing"], 
+     "Premises provide logical support for conclusions"),
+    
+    ("The correspondence theory of truth states that:", 
+     ["Truth is what most people believe", "Truth consists in agreement of thoughts with reality", "Truth is whatever works", "Truth doesn't exist"], 
+     "Truth consists in agreement of thoughts with reality"),
+    
+    ("According to the readings, what makes philosophy different from other fields?", 
+     ["It only studies ancient texts", "It examines fundamental assumptions other fields take for granted", "It requires no evidence", "It focuses only on practical problems"], 
+     "It examines fundamental assumptions other fields take for granted"),
+    
+    ("When evaluating knowledge claims, we should ask:", 
+     ["Who said it?", "What evidence supports this and could it be explained differently?", "Is it popular?", "Is it simple?"], 
+     "What evidence supports this and could it be explained differently?"),
+    
+    ("The distinction between knowledge and opinion matters because:", 
+     ["Knowledge is more popular", "Knowledge has rational justification and corresponds to reality", "Knowledge is easier", "Knowledge never changes"], 
+     "Knowledge has rational justification and corresponds to reality"),
+    
+    ("Why do philosophers emphasize clarity in their claims?", 
+     ["To sound smarter", "Because vague or ambiguous claims cannot be properly evaluated for truth", "To make arguments longer", "To confuse opponents"], 
+     "Because vague or ambiguous claims cannot be properly evaluated for truth"),
+    
+    ("The Gettier problem challenges:", 
+     ["The existence of truth", "The classical definition of knowledge as justified true belief", "The possibility of belief", "The need for justification"], 
+     "The classical definition of knowledge as justified true belief"),
+    
+    ("According to course readings, what is the main difference between anarchic and theoretical thinking?", 
+     ["They study different subjects", "Anarchic thinking accepts multiple valid perspectives while theoretical seeks one correct view", "They use different methods", "One is ancient, one is modern"], 
+     "Anarchic thinking accepts multiple valid perspectives while theoretical seeks one correct view"),
+    
+    ("In philosophical discourse, why are ad hominem arguments problematic?", 
+     ["They're too complex", "They attack the person rather than addressing their arguments", "They take too long", "They require special training"], 
+     "They attack the person rather than addressing their arguments"),
+    
+    ("The law of non-contradiction states that:", 
+     ["Everything contradicts everything else", "Something cannot both be and not be in the same respect at the same time", "All contradictions are true", "Logic is impossible"], 
+     "Something cannot both be and not be in the same respect at the same time"),
+    
+    ("What role do thought experiments play in epistemology?", 
+     ["They prove theories", "They test our intuitions about knowledge and help clarify concepts", "They replace empirical evidence", "They are just entertainment"], 
+     "They test our intuitions about knowledge and help clarify concepts"),
+    
+    ("Foundationalism in epistemology claims that:", 
+     ["All beliefs are equally basic", "Some beliefs are basic and don't require justification from other beliefs", "No beliefs can be justified", "Only empirical beliefs count"], 
+     "Some beliefs are basic and don't require justification from other beliefs"),
+    
+    ("Coherentism differs from foundationalism by arguing that:", 
+     ["Only foundations matter", "Beliefs are justified by fitting coherently with other beliefs", "No justification is possible", "Only sensory experience matters"], 
+     "Beliefs are justified by fitting coherently with other beliefs"),
+    
+    ("What is the main epistemological concern with skepticism?", 
+     ["It's too optimistic", "It challenges whether we can have any knowledge at all", "It's not philosophical", "It accepts everything as true"], 
+     "It challenges whether we can have any knowledge at all"),
+    
+    ("Reliabilism judges knowledge based on:", 
+     ["Popular consensus", "Whether the belief-forming process is reliable", "Authority endorsement", "Emotional certainty"], 
+     "Whether the belief-forming process is reliable"),
+    
+    ("What is internalism in epistemology?", 
+     ["Knowledge comes from within", "The factors that justify belief must be accessible to the believer", "Only internal mental states exist", "External world is irrelevant"], 
+     "The factors that justify belief must be accessible to the believer"),
+    
+    ("Externalism in epistemology holds that:", 
+     ["Only external things exist", "Justification can depend on factors outside the believer's awareness", "Knowledge is impossible", "Only empirical knowledge counts"], 
+     "Justification can depend on factors outside the believer's awareness"),
+    
+    ("According to the readings, what makes epistemology a central philosophical discipline?", 
+     ["It's the oldest field", "It examines the very possibility and nature of knowledge itself", "It's the easiest to understand", "It doesn't require arguments"], 
+     "It examines the very possibility and nature of knowledge itself"),
+    
+    ("The tripartite definition of knowledge requires:", 
+     ["Only truth", "Belief, truth, and justification", "Only justification", "Only belief"], 
+     "Belief, truth, and justification"),
+    
+    ("What is epistemic circularity?", 
+     ["Using circular reasoning", "Using a source of knowledge to validate itself", "Avoiding all reasoning", "Only trusting authorities"], 
+     "Using a source of knowledge to validate itself"),
+    
+    ("Modal epistemology deals with:", 
+     ["Only necessary truths", "Knowledge of possibility and necessity", "Only empirical facts", "Only logical truths"], 
+     "Knowledge of possibility and necessity"),
+    
+    ("What distinguishes knowledge from lucky guesses?", 
+     ["Knowledge is always certain", "Knowledge has proper justification and isn't accidental", "Knowledge is more popular", "Knowledge is simpler"], 
+     "Knowledge has proper justification and isn't accidental"),
+    
+    ("The value problem in epistemology asks:", 
+     ["How much knowledge costs", "Why knowledge is more valuable than mere true belief", "Which knowledge is most important", "How to measure knowledge"], 
+     "Why knowledge is more valuable than mere true belief"),
+    
+    ("Epistemic closure refers to:", 
+     ["Ending discussions", "If you know p and know that p implies q, then you know q", "Keeping knowledge secret", "Only experts can have knowledge"], 
+     "If you know p and know that p implies q, then you know q"),
+    
+    ("What is the lottery paradox in epistemology?", 
+     ["A puzzle about probability and knowledge claims", "A problem with random selection", "An issue with mathematical proofs", "A challenge to authority"], 
+     "A puzzle about probability and knowledge claims"),
+    
+    ("According to course material, why is precise definition important in philosophy?", 
+     ["To sound more academic", "Because imprecise claims cannot be properly evaluated", "To make arguments longer", "To confuse opponents"], 
+     "Because imprecise claims cannot be properly evaluated")
+]
