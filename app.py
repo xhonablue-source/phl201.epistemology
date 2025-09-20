@@ -974,7 +974,7 @@ elif page == "📚 Reference Guide":
             "Thales (c. 624-546 BCE)": {
                 "Key Idea": "Water is the fundamental substance; natural phenomena have natural explanations",
                 "Significance": "First Western philosopher to seek rational rather than mythological explanations",
-                "Quote": "All things are full of gods" (meaning natural forces, not supernatural beings)"
+                "Quote": "'All things are full of gods' (meaning natural forces, not supernatural beings)"
             },
             "Heraclitus (c. 535-475 BCE)": {
                 "Key Idea": "Everything flows - reality is constant change and flux",
