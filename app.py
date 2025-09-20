@@ -1331,8 +1331,8 @@ elif page == "🤖 AI Philosophy Tutor":
         # Initialize Anthropic client
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
             
-            # Suggested questions
-            st.subheader("💡 Quick Help Topics")
+        # Suggested questions
+        st.subheader("💡 Quick Help Topics")
             
             col1, col2 = st.columns(2)
             
