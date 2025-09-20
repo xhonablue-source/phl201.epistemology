@@ -1336,7 +1336,7 @@ elif page == "🤖 AI Philosophy Tutor":
             
         col1, col2 = st.columns(2)
             
-            with col1:
+        with col1:
                 st.markdown("**Concepts & Definitions:**")
                 if st.button("What's the difference between knowledge and opinion?", use_container_width=True):
                     st.session_state.current_question = "Explain the difference between knowledge and opinion, and how philosophers distinguish between them."
