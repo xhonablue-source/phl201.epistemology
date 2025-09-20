@@ -1446,7 +1446,6 @@ Be encouraging and patient, but also challenge students to think deeply. When th
         
         except ImportError:
             st.error("📦 Missing required library. Please install: `pip install anthropic`")
-    
     # Study tips
     st.markdown("---")
     st.subheader("💡 How to Use Your AI Tutor Effectively")
