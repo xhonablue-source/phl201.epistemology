@@ -1359,11 +1359,11 @@ elif page == "🤖 AI Philosophy Tutor":
                     st.session_state.current_question = "Explain the meaning and significance of 'That art thou' from the Upanishads. What philosophical insight does it convey?"
             
             # Initialize chat history
-        if 'tutor_chat_history' not in st.session_state:
+                if 'tutor_chat_history' not in st.session_state:
                 st.session_state.tutor_chat_history = []
             
             # Handle suggested questions
-            if 'current_question' in st.session_state:
+                if 'current_question' in st.session_state:
                 st.session_state.user_input = st.session_state.current_question
                 del st.session_state.current_question
             
@@ -1371,7 +1371,7 @@ elif page == "🤖 AI Philosophy Tutor":
             st.subheader("💬 Ask Your Philosophy Tutor")
             
             # Display chat history
-            for i, (question, answer) in enumerate(st.session_state.tutor_chat_history):
+                for i, (question, answer) in enumerate(st.session_state.tutor_chat_history):
                 with st.container():
                     st.markdown(f"**🧠 You:** {question}")
                     st.markdown(f"**🤖 Tutor:** {answer}")
@@ -1386,14 +1386,14 @@ elif page == "🤖 AI Philosophy Tutor":
             )
             
             col1, col2 = st.columns([1, 4])
-            with col1:
+                with col1:
                 ask_button = st.button("📚 Ask Tutor", type="primary")
-            with col2:
+                with col2:
                 if st.button("🗑️ Clear Chat"):
                     st.session_state.tutor_chat_history = []
                     st.rerun()
             
-            if ask_button and user_question.strip():
+                if ask_button and user_question.strip():
                 with st.spinner("🤔 Thinking about your question..."):
                     try:
                         # Create tutor prompt
