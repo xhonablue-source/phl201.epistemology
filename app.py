@@ -1347,7 +1347,7 @@ elif page == "🤖 AI Philosophy Tutor":
                 if st.button("What made Thales revolutionary?", use_container_width=True):
                     st.session_state.current_question = "Why was Thales considered revolutionary in the history of philosophy? What made his approach different?"
             
-            with col2:
+        with col2:
                 st.markdown("**Problem-Solving:**")
                 if st.button("Help me understand Zeno's paradoxes", use_container_width=True):
                     st.session_state.current_question = "Can you explain Zeno's paradoxes and why they were philosophically important? How might we resolve them?"
