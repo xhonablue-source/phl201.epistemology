@@ -294,6 +294,7 @@ with st.sidebar:
         "Core Modules",
         "Epistemology Quiz", 
         "Visualizations", 
+        "Key Definitions",
         "Quick Reference",
         "Resources",
         "AI Tutor"
@@ -758,6 +759,200 @@ elif page == "Epistemology Quiz":
             st.error("Keep Learning - Spend more time with the core modules.")
         
         restart_quiz()
+
+elif page == "Key Definitions":
+    st.header("Essential Epistemology Definitions")
+    st.markdown("**Comprehensive guide to key epistemological terms and concepts**")
+    
+    # Search functionality
+    search_term = st.text_input("Search definitions:", placeholder="Type a term to search...")
+    
+    # Core epistemological definitions
+    definitions = {
+        "Epistemology": {
+            "definition": "The branch of philosophy that studies the nature, sources, limits, and validity of knowledge",
+            "example": "Epistemology asks questions like 'What is knowledge?' and 'How do we know what we know?'",
+            "related": ["Knowledge", "Truth", "Justification"]
+        },
+        "Knowledge": {
+            "definition": "Traditionally defined as justified true belief, though this definition faces challenges",
+            "example": "You know it's raining if you believe it's raining, it actually is raining, and you have good reasons (like seeing/hearing rain)",
+            "related": ["JTB", "Belief", "Truth", "Justification"]
+        },
+        "JTB (Justified True Belief)": {
+            "definition": "The classical analysis of knowledge requiring three conditions: belief, truth, and justification",
+            "example": "To know Paris is the capital of France, you must: (1) believe it, (2) it must be true, (3) have good reasons",
+            "related": ["Knowledge", "Gettier Problem", "Belief", "Truth", "Justification"]
+        },
+        "A Priori Knowledge": {
+            "definition": "Knowledge that can be known independently of experience through reason alone",
+            "example": "Mathematical truths (2+2=4), logical principles (if A=B and B=C, then A=C)",
+            "related": ["A Posteriori", "Rationalism", "Necessary Truth"]
+        },
+        "A Posteriori Knowledge": {
+            "definition": "Knowledge that requires experience and observation to be known",
+            "example": "Scientific facts (water boils at 100°C), historical events (World War II ended in 1945)",
+            "related": ["A Priori", "Empiricism", "Contingent Truth"]
+        },
+        "Rationalism": {
+            "definition": "The view that reason is the primary source of knowledge and that some knowledge is a priori",
+            "example": "Descartes argued we can know 'I think, therefore I am' through reason alone",
+            "related": ["A Priori", "Empiricism", "Innate Ideas", "Descartes"]
+        },
+        "Empiricism": {
+            "definition": "The view that sensory experience is the primary source of knowledge",
+            "example": "Locke argued the mind is a 'blank slate' filled through sensory experience",
+            "related": ["A Posteriori", "Rationalism", "Sense Experience", "Locke"]
+        },
+        "Gettier Problem": {
+            "definition": "Cases showing that justified true belief is not sufficient for knowledge due to luck or accident",
+            "example": "Smith believes 'the person who gets the job has 10 coins' based on evidence about Jones, but Smith gets the job and happens to have 10 coins",
+            "related": ["JTB", "Knowledge", "Lucky Truth", "Accidental Truth"]
+        },
+        "Skepticism": {
+            "definition": "The philosophical position that questions whether knowledge is possible or achievable",
+            "example": "Cartesian skepticism asks: How do you know you're not dreaming or being deceived by an evil demon?",
+            "related": ["Doubt", "Certainty", "External World", "Descartes"]
+        },
+        "Foundationalism": {
+            "definition": "The theory that knowledge has a foundation of basic beliefs that need no justification from other beliefs",
+            "example": "Basic perceptual beliefs like 'I see red' might need no further justification",
+            "related": ["Basic Beliefs", "Coherentism", "Justification", "Regress Problem"]
+        },
+        "Coherentism": {
+            "definition": "The theory that beliefs are justified by how well they fit together in a coherent system",
+            "example": "A belief is justified if it coheres with and is supported by other beliefs in your belief system",
+            "related": ["Foundationalism", "Holism", "Web of Belief", "Justification"]
+        },
+        "Reliabilism": {
+            "definition": "The theory that knowledge comes from reliable belief-forming processes",
+            "example": "Vision is generally reliable, so beliefs formed through normal vision count as knowledge",
+            "related": ["Process", "Reliability", "Externalism", "Goldman"]
+        },
+        "Internalism": {
+            "definition": "The view that justifying factors must be accessible to the believer's consciousness",
+            "example": "You can only be justified in believing something if you're aware of your reasons",
+            "related": ["Externalism", "Access", "Justification", "Consciousness"]
+        },
+        "Externalism": {
+            "definition": "The view that justifying factors can be external to the believer's awareness",
+            "example": "Your belief might be justified by reliable processes even if you don't know they're reliable",
+            "related": ["Internalism", "Reliabilism", "Environment", "Process"]
+        },
+        "Theoretical Thinking": {
+            "definition": "Stenstad's term for thinking that seeks one correct view about reality, excluding different views",
+            "example": "Scientific realism holds there's one true description of reality that science aims to discover",
+            "related": ["Anarchic Thinking", "Objectivity", "Truth", "Stenstad"]
+        },
+        "Anarchic Thinking": {
+            "definition": "Stenstad's term for thinking that accepts multiple valid perspectives without ruling them out",
+            "example": "Different cultural approaches to understanding reality might all offer valid insights",
+            "related": ["Theoretical Thinking", "Pluralism", "Perspectivism", "Stenstad"]
+        },
+        "Truth": {
+            "definition": "The property of statements or beliefs that correspond to reality (correspondence theory)",
+            "example": "The statement 'snow is white' is true if and only if snow is white",
+            "related": ["Correspondence Theory", "Coherence Theory", "Pragmatic Theory"]
+        },
+        "Justification": {
+            "definition": "The reason or evidence that supports a belief and makes it reasonable to hold",
+            "example": "Your justification for believing it will rain might be dark clouds and weather forecasts",
+            "related": ["Evidence", "Reasons", "Support", "Warrant"]
+        },
+        "Belief": {
+            "definition": "A mental state of accepting or holding a proposition to be true",
+            "example": "You believe Paris is in France - you accept this proposition as true",
+            "related": ["Knowledge", "Opinion", "Acceptance", "Conviction"]
+        },
+        "Vague": {
+            "definition": "Using words that are imprecise or whose boundaries are unclear",
+            "example": "'Old people shouldn't drive' is vague because 'old' has unclear boundaries",
+            "related": ["Ambiguous", "Precise", "Clear", "Definition"]
+        },
+        "Ambiguous": {
+            "definition": "Using words that can have multiple possible meanings",
+            "example": "'The bank is closed' could refer to a financial institution or riverbank",
+            "related": ["Vague", "Multiple Meanings", "Context", "Interpretation"]
+        },
+        "Problem of the Criterion": {
+            "definition": "The circular problem that we need criteria for truth to establish criteria for truth",
+            "example": "To know what knowledge is, we need criteria, but to get criteria, we need to know what knowledge is",
+            "related": ["Circularity", "Criteria", "Method", "Standards"]
+        },
+        "Fallibilism": {
+            "definition": "The view that knowledge doesn't require absolute certainty - we can know things while acknowledging we might be wrong",
+            "example": "We can know scientific facts even though future discoveries might revise them",
+            "related": ["Certainty", "Doubt", "Revision", "Probability"]
+        },
+        "Virtue Epistemology": {
+            "definition": "The theory that knowledge involves intellectual virtues like careful observation, critical thinking, and open-mindedness",
+            "example": "A scientist who carefully checks their work displays intellectual virtues that contribute to knowledge",
+            "related": ["Intellectual Virtues", "Character", "Excellence", "Sosa"]
+        },
+        "Contextualism": {
+            "definition": "The view that knowledge attributions depend on context - the same belief might count as knowledge in one context but not another",
+            "example": "In casual conversation you 'know' the bank is open, but when facing financial crisis you need higher standards",
+            "related": ["Context", "Standards", "Practical Interests", "Skepticism"]
+        }
+    }
+    
+    # Filter definitions based on search
+    if search_term:
+        filtered_defs = {k: v for k, v in definitions.items() 
+                        if search_term.lower() in k.lower() or 
+                        search_term.lower() in v["definition"].lower()}
+    else:
+        filtered_defs = definitions
+    
+    # Display definitions
+    if filtered_defs:
+        for term, details in filtered_defs.items():
+            with st.expander(f"**{term}**"):
+                st.markdown(f"**Definition:** {details['definition']}")
+                st.markdown(f"**Example:** {details['example']}")
+                if details['related']:
+                    related_terms = ", ".join(details['related'])
+                    st.markdown(f"**Related Terms:** {related_terms}")
+    else:
+        st.warning("No definitions found matching your search term.")
+    
+    # Quick reference categories
+    st.markdown("---")
+    st.subheader("Browse by Category")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        if st.button("Core Concepts", use_container_width=True):
+            st.session_state.def_filter = ["Epistemology", "Knowledge", "JTB", "Truth", "Belief", "Justification"]
+        if st.button("Sources of Knowledge", use_container_width=True):
+            st.session_state.def_filter = ["Rationalism", "Empiricism", "A Priori Knowledge", "A Posteriori Knowledge"]
+    
+    with col2:
+        if st.button("Major Theories", use_container_width=True):
+            st.session_state.def_filter = ["Foundationalism", "Coherentism", "Reliabilism", "Virtue Epistemology"]
+        if st.button("Skepticism & Problems", use_container_width=True):
+            st.session_state.def_filter = ["Skepticism", "Gettier Problem", "Problem of the Criterion"]
+    
+    with col3:
+        if st.button("Course Concepts", use_container_width=True):
+            st.session_state.def_filter = ["Theoretical Thinking", "Anarchic Thinking", "Vague", "Ambiguous"]
+        if st.button("Show All", use_container_width=True):
+            if 'def_filter' in st.session_state:
+                del st.session_state.def_filter
+    
+    # Display filtered results if category selected
+    if 'def_filter' in st.session_state:
+        st.markdown("### Filtered Results")
+        for term in st.session_state.def_filter:
+            if term in definitions:
+                details = definitions[term]
+                with st.expander(f"**{term}**"):
+                    st.markdown(f"**Definition:** {details['definition']}")
+                    st.markdown(f"**Example:** {details['example']}")
+                    if details['related']:
+                        related_terms = ", ".join(details['related'])
+                        st.markdown(f"**Related Terms:** {related_terms}")
 
 elif page == "Visualizations":
     create_visualizations()
