@@ -1330,74 +1330,74 @@ elif page == "🤖 AI Philosophy Tutor":
         
         # Initialize Anthropic client
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-            
+        
         # Suggested questions
         st.subheader("💡 Quick Help Topics")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("**Concepts & Definitions:**")
+            if st.button("What's the difference between knowledge and opinion?", use_container_width=True):
+                st.session_state.current_question = "Explain the difference between knowledge and opinion, and how philosophers distinguish between them."
             
-            col1, col2 = st.columns(2)
+            if st.button("How do I identify premises and conclusions?", use_container_width=True):
+                st.session_state.current_question = "How do I identify the premises and conclusion in a philosophical argument? Can you give me some examples?"
             
-            with col1:
-                st.markdown("**Concepts & Definitions:**")
-                if st.button("What's the difference between knowledge and opinion?", use_container_width=True):
-                    st.session_state.current_question = "Explain the difference between knowledge and opinion, and how philosophers distinguish between them."
-                
-                if st.button("How do I identify premises and conclusions?", use_container_width=True):
-                    st.session_state.current_question = "How do I identify the premises and conclusion in a philosophical argument? Can you give me some examples?"
-                
-                if st.button("What made Thales revolutionary?", use_container_width=True):
-                    st.session_state.current_question = "Why was Thales considered revolutionary in the history of philosophy? What made his approach different?"
+            if st.button("What made Thales revolutionary?", use_container_width=True):
+                st.session_state.current_question = "Why was Thales considered revolutionary in the history of philosophy? What made his approach different?"
+        
+        with col2:
+            st.markdown("**Problem-Solving:**")
+            if st.button("Help me understand Zeno's paradoxes", use_container_width=True):
+                st.session_state.current_question = "Can you explain Zeno's paradoxes and why they were philosophically important? How might we resolve them?"
             
-            with col2:
-                st.markdown("**Problem-Solving:**")
-                if st.button("Help me understand Zeno's paradoxes", use_container_width=True):
-                    st.session_state.current_question = "Can you explain Zeno's paradoxes and why they were philosophically important? How might we resolve them?"
-                
-                if st.button("Explain rationalism vs empiricism", use_container_width=True):
-                    st.session_state.current_question = "What's the difference between rationalism and empiricism in epistemology? Can you give examples of each?"
-                
-                if st.button("What does 'That art thou' mean?", use_container_width=True):
-                    st.session_state.current_question = "Explain the meaning and significance of 'That art thou' from the Upanishads. What philosophical insight does it convey?"
+            if st.button("Explain rationalism vs empiricism", use_container_width=True):
+                st.session_state.current_question = "What's the difference between rationalism and empiricism in epistemology? Can you give examples of each?"
             
-            # Initialize chat history
-            if 'tutor_chat_history' not in st.session_state:
+            if st.button("What does 'That art thou' mean?", use_container_width=True):
+                st.session_state.current_question = "Explain the meaning and significance of 'That art thou' from the Upanishads. What philosophical insight does it convey?"
+        
+        # Initialize chat history
+        if 'tutor_chat_history' not in st.session_state:
+            st.session_state.tutor_chat_history = []
+        
+        # Handle suggested questions
+        if 'current_question' in st.session_state:
+            st.session_state.user_input = st.session_state.current_question
+            del st.session_state.current_question
+        
+        # Chat interface
+        st.subheader("💬 Ask Your Philosophy Tutor")
+        
+        # Display chat history
+        for i, (question, answer) in enumerate(st.session_state.tutor_chat_history):
+            with st.container():
+                st.markdown(f"**🧠 You:** {question}")
+                st.markdown(f"**🤖 Tutor:** {answer}")
+                st.markdown("---")
+        
+        # User input
+        user_question = st.text_area(
+            "Ask your question:",
+            value=st.session_state.get('user_input', ''),
+            height=100,
+            placeholder="e.g., I'm confused about the difference between Heraclitus and Parmenides..."
+        )
+        
+        col1, col2 = st.columns([1, 4])
+        with col1:
+            ask_button = st.button("📚 Ask Tutor", type="primary")
+        with col2:
+            if st.button("🗑️ Clear Chat"):
                 st.session_state.tutor_chat_history = []
-            
-            # Handle suggested questions
-            if 'current_question' in st.session_state:
-                st.session_state.user_input = st.session_state.current_question
-                del st.session_state.current_question
-            
-            # Chat interface
-            st.subheader("💬 Ask Your Philosophy Tutor")
-            
-            # Display chat history
-            for i, (question, answer) in enumerate(st.session_state.tutor_chat_history):
-                with st.container():
-                    st.markdown(f"**🧠 You:** {question}")
-                    st.markdown(f"**🤖 Tutor:** {answer}")
-                    st.markdown("---")
-            
-            # User input
-            user_question = st.text_area(
-                "Ask your question:",
-                value=st.session_state.get('user_input', ''),
-                height=100,
-                placeholder="e.g., I'm confused about the difference between Heraclitus and Parmenides..."
-            )
-            
-            col1, col2 = st.columns([1, 4])
-            with col1:
-                ask_button = st.button("📚 Ask Tutor", type="primary")
-            with col2:
-                if st.button("🗑️ Clear Chat"):
-                    st.session_state.tutor_chat_history = []
-                    st.rerun()
-            
-            if ask_button and user_question.strip():
-                with st.spinner("🤔 Thinking about your question..."):
-                    try:
-                        # Create tutor prompt
-                        system_prompt = """You are a philosophy tutor helping students learn the fundamentals of philosophy and epistemology. Your role is to:
+                st.rerun()
+        
+        if ask_button and user_question.strip():
+            with st.spinner("🤔 Thinking about your question..."):
+                try:
+                    # Create tutor prompt
+                    system_prompt = """You are a philosophy tutor helping students learn the fundamentals of philosophy and epistemology. Your role is to:
 
 1. Explain concepts clearly and accurately
 2. Help students understand rather than just giving answers
@@ -1417,35 +1417,36 @@ The course covers:
 
 Be encouraging and patient, but also challenge students to think deeply. When they ask for help understanding a concept, don't just define it - help them see why it matters and how it connects to other ideas."""
 
-                        # Get response from Claude
-                        message = client.messages.create(
-                            model="claude-3-haiku-20240307",
-                            max_tokens=1000,
-                            temperature=0.7,
-                            system=system_prompt,
-                            messages=[{
-                                "role": "user", 
-                                "content": user_question
-                            }]
-                        )
-                        
-                        response = message.content[0].text
-                        
-                        # Add to chat history
-                        st.session_state.tutor_chat_history.append((user_question, response))
-                        
-                        # Clear input
-                        st.session_state.user_input = ""
-                        
-                        # Rerun to show new response
-                        st.rerun()
-                        
-                    except Exception as e:
-                        st.error(f"Error getting response: {str(e)}")
-                        st.info("Please check your API key and try again.")
-        
-        except ImportError:
-            st.error("📦 Missing required library. Please install: `pip install anthropic`")
+                    # Get response from Claude
+                    message = client.messages.create(
+                        model="claude-3-haiku-20240307",
+                        max_tokens=1000,
+                        temperature=0.7,
+                        system=system_prompt,
+                        messages=[{
+                            "role": "user", 
+                            "content": user_question
+                        }]
+                    )
+                    
+                    response = message.content[0].text
+                    
+                    # Add to chat history
+                    st.session_state.tutor_chat_history.append((user_question, response))
+                    
+                    # Clear input
+                    st.session_state.user_input = ""
+                    
+                    # Rerun to show new response
+                    st.rerun()
+                    
+                except Exception as e:
+                    st.error(f"Error getting response: {str(e)}")
+                    st.info("Please check your API key and try again.")
+    
+    except ImportError:
+        st.error("📦 Missing required library. Please install: `pip install anthropic`")
+    
     # Study tips
     st.markdown("---")
     st.subheader("💡 How to Use Your AI Tutor Effectively")
