@@ -1359,7 +1359,7 @@ elif page == "🤖 AI Philosophy Tutor":
                     st.session_state.current_question = "Explain the meaning and significance of 'That art thou' from the Upanishads. What philosophical insight does it convey?"
             
             # Initialize chat history
-            if 'tutor_chat_history' not in st.session_state:
+        if 'tutor_chat_history' not in st.session_state:
                 st.session_state.tutor_chat_history = []
             
             # Handle suggested questions
